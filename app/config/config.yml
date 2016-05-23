@@ -95,14 +95,9 @@ hwi_oauth:
     resource_owners:
         github:
             type:                github
-            client_id:           f4bb9e74250c7cd2505d
-            client_secret:       d49c03a3045ee406df4c0accf9356e6c200d85de
+            client_id:           #f4bb9e742j0c7cd2505l
+            client_secret:       #d49c03a3045ee4j6df4c0accf9356e6c200d85dm
             scope:               "user:email"
-        facebook:
-            type:                facebook
-            client_id:           472084239558987
-            client_secret:       e5fd8c4679f3a0216daa9a9577a2dbc0
-            scope:               "email"
 
 
     fosub:
