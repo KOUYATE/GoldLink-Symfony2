@@ -1,0 +1,173 @@
+{% extends "GoldLinkUserBundle::layout.html.twig" %}
+
+{% block title %}GoldLink{% endblock %}
+
+{% block stylesheets %}
+
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/jquery-ui.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/boostrap.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
+
+{% endblock %}
+
+{% block body %}
+
+    {% block header %}
+        {{ parent() }}
+    {% endblock %}
+
+    {% block page %}
+
+        {% block navbar %} {{ parent() }} {% endblock %}
+        {% block contenu %}
+            <div id="contenu" class="fond">
+                <div id="legend_titre">
+                    <legend>Gestion Lien</legend>
+                </div>
+                <div id="tabs">
+                    <ul>
+                        <li><a href="#tabs-1">Nouveau Lien</a></li>
+                        <li><a href="#tabs-2">Editer Lien</a></li>
+                        <li><a href="#tabs-3">Suppression</a></li>
+                    </ul>
+                    <div id="tabs-1" >
+                        {% if message_new is defined %}
+                            <div class="alert-success"><p>Ajout effectuer avec success ! <span class="text-info">Vous pouvez visualiser le lien creer dans le rubrique Editer Lien</span></p> </div>
+                        {% endif %}
+                        <form  method="post">
+
+                            <input type="text" name="url" />
+                            <span>url : http://www.exemple.com/</span>
+                            <input type="text" name="titre" required />
+                            <span>Titre</span>
+                            <input type="text" name="tag" />
+                            <span>Tag</span>
+                            <select name="visibiliteId" class="" >
+                                {% for visibilite in visibilites %}
+                                    <option value="{{ visibilite.id }}">{{ visibilite.libelle }}</option>
+                                {% endfor %}
+                            </select>
+                            <select name="thematiqueId" class="">
+                            {% for thematique in thematiques %}
+                                <option value="{{ thematique.id }}">{{ thematique.libelleThematique }}</option>
+                            {% endfor %}
+                            </select>
+                            <button type="submit" name="ajouter_lien" value="password_change" class="btn btn-success">
+                                <i class="glyphicon glyphicon-ok"></i>&nbsp;Ajouter
+                            </button>
+                        </form>
+                    </div>
+
+                    <div id="tabs-2">
+                           {% if message_update is defined %}
+                               <div class="alert-success"><p>Mise à jour effectuer</p> </div>
+                        {% endif %}
+                           {% for lien in liens %}
+                        <form action="" method="post">
+                               <div>
+                                <a href="{{ lien.url }}">{{ lien.url }}</a>
+                                <a href="#" data-dev="{{ lien.id }}">Modifier &#8594;</a>
+                               </div>
+
+                                <div data-dev-ass="{{ lien.id }}">
+
+                                    <input type="text" name="titre" value="{{ lien.titre }}"required />
+                                    <span>Titre</span>
+                                    <input type="text" name="tag" value="{{ lien.tag }}" required/>
+                                    <span>Tag</span>
+                                    <select name="visibiliteId" class="" >
+                                        {% for visibilite in visibilites %}
+                                            <option value="{{ visibilite.id }}">{{ visibilite.libelle }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <select name="thematiqueId" class="">
+                                        {% for thematique in thematiques %}
+                                            <option value="{{ thematique.id }}">{{ thematique.libelleThematique }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="submit" name="modifier_lien" value="" class="btn btn-success glyphicon-envelope">
+                                        <i class="glyphicon glyphicon-ok"></i>&nbsp;Modifier
+                                    </button>
+                                    <input type="hidden" name="lienId" value="{{ lien.id }}"/>
+                                </div>
+                        </form>
+                            {% endfor %}
+
+
+                    </div>
+                    <div id="tabs-3">
+                        {% if message_delete is defined %}
+                            <div class="alert-success"><p>Suppression à effectuer</p> </div>
+                        {% endif %}
+                        <form action="" method="post">
+                            {% for lien in liens %}
+                                <div>
+
+                                       <label> <a href="{{ lien.url }}"> {{ lien.titre }}</a> </label>
+                                        {{ lien.url }} creer le  <i>{{ lien.dateCreation|date('d/m/Y') }}</i>
+                                        <input type="checkbox" name="{{ lien.id }}" style="width: 10px ; height: 10px;"/>
+
+                                </div>
+                            {% endfor %}
+                            <button class="btn btn-danger glyphicon-remove" name="supprimer_lien">Supprimer selection</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+            <script>
+                function borderNone(id){
+                    var input = document.getElementById("search");
+                    input.style.border = 'none';
+                }
+            </script>
+        {% endblock %}
+
+    {% endblock %}
+
+    {% block footer %} {{ parent() }} {% endblock %}
+
+{% endblock %}
+
+{% block javascripts %} {{ parent() }}
+    <script type="text/javascript" src="{{ asset('js/jquery-ui.js') }}"></script>
+    <script>
+        $(function() {
+            $( "#tabs" ).tabs();
+            $('*').each(function(){
+                var $obj = $(this);
+                var attr2 = $obj.attr('data-dev-ass');
+                if(typeof attr2 !== 'undefined'&& attr2 !== false){
+                   $obj.hide();
+                }
+            });
+            $('a').each(function(){
+                $a = $(this);
+                var click = 1;
+                var attr = $a.attr('data-dev');
+                if(typeof attr !== 'undefined'&& attr !== false){
+                    $a.click(function(){
+                        $('*').each(function(){
+                            var $obj = $(this);
+                            var attr2 = $obj.attr('data-dev-ass');
+                            if(typeof attr2 !== 'undefined'&& attr2 !== false){
+                                if(attr2 == attr){
+                                   if(click % 2 == 0){
+                                       $obj.fadeOut();
+                                   }else{
+                                       $obj.fadeIn();
+                                   }
+                                   click++;
+                                }
+                            }
+                        });
+                        return false;
+                    });
+                }
+            });
+        });
+
+    </script>
+{% endblock %}

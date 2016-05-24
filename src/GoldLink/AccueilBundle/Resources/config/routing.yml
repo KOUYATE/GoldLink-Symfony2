@@ -1,0 +1,6 @@
+index:
+    pattern: /{accueil}
+    defaults: { _controller: GoldLinkAccueilBundle:Accueil:index, accueil: Accueil}
+    requirements:
+        accueil: Accueil|accueil
+

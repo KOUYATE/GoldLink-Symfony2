@@ -1,0 +1,33 @@
+
+    <table class="table-bordered table arrow">
+        <tr>
+            <th>Titre</th>
+            <th>Url</th>
+            <th>Date creation</th>
+            <th>Heure creation</th>
+            <th>Edition</th>
+            <th>Suppression</th>
+            <th>Partager</th>
+            <th>Nombre d'enregistrements</th>
+        </tr>
+        {% for item in result %}
+            <tr>
+                <td>{{ item.titre }}</td>
+                <td><a href="{{ item.url }}">{{ item.url }}</a></td>
+                <td>{{ item.dateCreation | date('d/m/Y') }}</td>
+                <td>{{ item.dateCreation| date('h') }} H {{ item.dateCreation| date('i') }}</td>
+                <td>
+                    <a href="{{ path('Modifier_Lien',{id : item.id }) }}" class="btn btn-info">Edidter</a>
+                </td>
+                <td>
+                    <a href="{{ path('Supprimer_Lien',{id : item.id }) }}" class="btn btn-danger">Supprimer</a>
+                </td>
+                <td>
+                    <a href="{{ path('Partager_Lien',{id : item.id }) }}" class="btn btn-success">Partager</a>
+                </td>
+
+                <td>{{ item.nombreEnregistrement }}</td>
+            </tr>
+        {% endfor %}
+
+    </table>

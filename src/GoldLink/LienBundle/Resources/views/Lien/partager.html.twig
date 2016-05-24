@@ -1,0 +1,105 @@
+{% extends "GoldLinkUserBundle::layout.html.twig" %}
+
+{% block title %}GoldLink{% endblock %}
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/boostrap.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/animate.css') }}">
+{% endblock %}
+
+{% block body %}
+    {% block header %}
+        {{ parent() }}
+    {% endblock %}
+    {% block page %}
+
+        {% block navbar %} {{ parent() }} {% endblock %}
+        {% block contenu %}
+            <div id="contenu" class="fond">
+    {% if save.success is defined %}
+            <pre class="alert alert-success">Partage effectuer avec succès</pre>
+    {% endif %}
+    {% if save.errors is defined %}
+        <p class="alert-danger">Echec du partage</p>
+    {% endif %}
+<div class="panel panel-primary">
+    <div class="panel-heading">{{ lien.titre }}</div>
+    <div class="panel-body">
+        <form class="form-control-static" role="form" method="post">
+            <table class="table">
+                <tr>
+                    <th>Titre</th>
+                    <th>Url</th>
+                    <th>Publier</th>
+                    <th>Groupes</th>
+                    <th>Valider</th>
+                </tr>
+                <tr>
+                    <td><a href="{{ lien.url }}">{{ lien.titre }}</a></td>
+                    <td><a href="{{ lien.url }}">{{ lien.url }}</a></td>
+                    <td><select name="option" class="form-control">
+                            <option value="profil">Dans votre propre journal</option>
+                            <option value="groupe">Dans un groupe</option>
+                        </select></td>
+                    <td>
+                        <select name="group" class="form-control">
+                            {% for groupe in groupes %}
+                                <option value="{{ groupe.groupeId }}">{{ groupe.nomDuGroupe }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <button name="publier" class="btn btn-success">Publier</button>
+                    </td>
+                </tr>
+            </table>
+            <input type="hidden" name="lienId" value="{{ lien.id }}"/>
+        </form>
+
+
+
+        <div style="float: left; margin: 0 1em 1em 0" class="fb-share-button" data-href="{{ lien.url  }}" data-type="button">
+
+        </div>
+        <div style="float: left"><a href="https://twitter.com/share" data-url="{{ lien.url  }}"
+                                    class="twitter-share-button" data-related="jasoncosta" data-lang="fr"
+                             data-size="medium" data-count="none">Partager sur Tweeter</a>
+        </div>
+
+
+    </div>
+    <div class="panel-footer">
+        <a href="{{ path('Supprimer_Lien',{ id : lien.id }) }}" class="btn btn-danger">Supprimer</a>
+        <a href="{{ path('Modifier_Lien',{id : lien.id }) }}" class="btn btn-info">Modifier</a>
+    </div>
+</div>
+    </div>
+
+
+
+
+        {% block footer %}
+            {{ parent() }}
+
+    {% endblock %}
+{% endblock %}
+        {% endblock %}
+
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/fr_FR/all.js#xfbml=1&appId=472084239558987";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+
+{% endblock %}
+
+
+

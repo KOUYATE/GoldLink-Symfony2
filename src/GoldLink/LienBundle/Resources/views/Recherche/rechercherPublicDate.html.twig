@@ -1,0 +1,33 @@
+
+    <table class="table-bordered table arrow">
+        <tr>
+            <th>Titre</th>
+            <th>Url</th>
+            <th>Date creation</th>
+            <th>Heure creation</th>
+            <th>Edition</th>
+            <th>Suppression</th>
+            <th>Partager</th>
+            <th>Tags</th>
+        </tr>
+        {% for lien in result %}
+            <tr>
+                <td>{{ lien.titre }}</td>
+                <td><a href="{{ lien.url }}">{{ lien.url }}</a></td>
+                <td>{{ lien.dateCreation| date('d/m/Y') }}</td>
+                <td>{{ lien.dateCreation| date('h') }} H {{ lien.dateCreation| date('i') }}</td>
+                <td>
+                    <a href="{{ path('Modifier_Lien',{id : lien.id }) }}" class="btn btn-info">Edidter</a>
+                </td>
+                <td>
+                    <a href="{{ path('Supprimer_Lien',{id : lien.id }) }}" class="btn btn-danger">Supprimer</a>
+                </td>
+                <td>
+                    <a href="{{ path('Partager_Lien',{id : lien.id }) }}" class="btn btn-success">Partager</a>
+                </td>
+                <td>{% for tag in lien.tags %}<a href="#">#{{ tag.libelle }} </a> {% endfor %}</td>
+            </tr>
+            <a href="{{ lien.url }}"></a>
+        {% endfor %}
+
+    </table>

@@ -1,0 +1,84 @@
+{% extends 'GoldLinkUserBundle::layout.html.twig' %}
+
+{% block title %}GoldLink{% endblock %}
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/boostrap.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/lien.css') }}"/>
+
+{% endblock %}
+
+{% block body %}
+
+    {% block header %}
+        {{ parent() }}
+    {% endblock %}
+    {% block page %}
+        {% block navbar %} {{ parent() }} {% endblock %}
+        {% block contenu %}
+<div id="contenu" class="fond">
+            <div class="form">
+                <div id="legend_titre2">
+                    <legend>
+                        Bibliothèque des Liens </legend>
+                    </legend>
+                </div>
+                <li> <a href="#"> {{ liens|length }} Lien(s) </a></li>
+                <li> <a href="#"> 1 Following </a></li>
+                <li> <a href="#"> 0 Followers </a></li>
+                <li> <a href="#"> 5 Réseaux </a></li>
+                <pre class="alert alert-info" style="font-weight:bold">Vous pouvez afficher les liens de votre bibliothèque par thème, popularité, état etc...</pre>
+                <form action="#" method="post">
+                <table class="table table-hover">
+                    <tr>
+                        <td><label>Affichage par </label></td>
+                        <td><select class="form-control" style="width:50%" name="affichage">
+                                <option value="public">Liens publics</option>
+                                <option value="groupe">Liens Partager par groupe</option>
+                                <option value="thematique">Liens d'une thématique</option>
+                            </select></td>
+                    </tr>
+                    <tr>
+                        <td><label>Trié par  </label></td>
+                        <td><select class="form-control" style="width:50%" name="trie">
+                                <option value="ancien">Du plus recent au plus ancien</option>
+                                <option value="tag">Filtrage par tags</option>
+                                <option value="note">Note</option>
+                                <option value="popularite">Popularité</option>
+                            </select></td>
+                    </tr>
+                </table>
+                    <button name="bouton-trieLiens" class="btn btn-info">Lancer la recherche</button>
+                </form>
+            </div>
+            <hr />
+
+
+    {% for lien in liens %}
+        <div>
+            <label><a herf="{{ lien.url }}">{{ lien.titre }}</a> &nbsp;&nbsp;&nbsp;{{ lien.url }}</label>
+            <div>
+                <img src="{{ asset('img/comment.png') }}" />
+            </div>
+        </div>
+
+
+    {% endfor %}
+
+            <div>
+                <label><a herf="#">Mon lien</a> &nbsp;&nbsp;&nbsp;www.siteduzero.com</label>
+                <div>OpenClassrooms (anciennement le Site du Zéro), est un site web qui propose des tutoriels sur l'informatique et sur les sciences.
+                    <img src="img/comment.png" />
+                </div>
+            </div>
+      </div>
+        {% endblock %}
+
+    {% endblock %}
+    {% block footer %}
+        {{ parent() }}
+    {% endblock %}
+{% endblock %}
+{% block javascripts %} {{ parent() }} {% endblock %}

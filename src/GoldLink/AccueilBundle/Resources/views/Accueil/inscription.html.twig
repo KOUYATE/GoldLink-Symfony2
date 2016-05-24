@@ -1,0 +1,75 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}{{ SITE_NAME }} - INSCRIPTION{% endblock %}
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/boostrap.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/goldlink.css') }}">
+
+{% endblock %}
+
+{% block body %}
+
+    <div id="header-transparent">
+        <a href="{{ path('index') }}" class="nom_site"><img src="{{ asset('img/icon3.png') }}" style="margin-left:3em;margin-right:1em" />GoldLink</a>
+        <a id="log" href="{{ path('hwi_oauth_connect') }}"><img src="{{ asset('img/login.png') }}" /><span>Se connecter</span></a>
+    </div>
+
+    <div id="conteneur">
+
+        <div id="contenu">
+            <div id="thumb">
+                <p> GoldLink est un Réseau communauteur de Partage de Liens entre utilisateurs et dans les réseaux sociaux </p>
+            </div>
+
+            <div id="page">
+
+                <div class="container">
+                    <div class="col-sm-3"></div>
+                    <form class="form-signin col-sm-6" role="form" method="post" action="login.html">
+                        <h2 class="form-signin-heading" style="text-align:center; font-variant:small-caps">Nous rejoindre</h2>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Nom" name="nom"required="" autofocus>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="mail"placeholder="Mail" required>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Login" name="login"required="" autofocus>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="password" class="form-control" name="pass"placeholder="Mot de passe" required>
+                        </div>
+
+                        <div class="form-group">
+                            <p class="guide">Date de naissance</p>
+                            <input type="date" class="form-control" name="pass"placeholder="Mot de passe" required>
+                        </div>
+
+                        <div class="form-group">
+                            <button class="btn btn-success btn-xxl" name="authentification"type="submit">Nous rejoindre</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('js/jquery.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/goldlink.js') }}"></script>
+    <script type="text/javascript">
+        var d = new Date();
+        d = d.getFullYear();
+        dateOption($('#annee') , d - 100 , d);
+    </script>
+{% endblock %}
+

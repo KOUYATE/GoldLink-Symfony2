@@ -1,0 +1,140 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}{{ SITE_NAME }} - CONNEXION{% endblock %}
+
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/boostrap.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/goldlink.css') }}">
+
+{% endblock %}
+
+
+{% block body %}
+    <div id="header-transparent">
+        <a href="{{ path('index') }}" class="nom_site">
+            <img src="{{ asset('img/icon3.png') }}" style="margin-left:3em;margin-right:1em" />
+        GoldLink</a>
+
+        <form method="post" action="{{ path('fos_user_registration_register') }}" style="float:right; line-height:80px; margin-right:30px">
+
+            <button type="submit" class="btn btn-success"> Nous rejoindre</button>
+        </form>
+
+
+    </div>
+
+        <div id="fb-root"></div>
+        <script>
+            window.fbAsyncInit = function() {
+                // init the FB JS SDK
+                FB.init({
+                    appId      : '12345678910',                        // App ID from the app dashboard
+                    channelUrl : '//yourdomain.com/channel.html',      // Channel file for x-domain comms
+                    status     : true,                                 // Check Facebook Login status
+                    xfbml      : true                                  // Look for social plugins on the page
+                });
+            };
+
+            // Load the SDK asynchronously
+            (function(d, s, id){
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) {return;}
+                js = d.createElement(s); js.id = id;
+                js.src = "//connect.facebook.net/en_US/all.js";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+
+            function fb_login() {
+                FB.getLoginStatus(function(response) {
+                    if (response.status === 'connected') {
+                        // connected
+                        alert('Already connected, redirect to login page to create token.');
+                        document.location = "{{ url("hwi_oauth_service_redirect", {service: "facebook"}) }}";
+                    } else {
+                        // not_authorized
+                        FB.login(function(response) {
+                            if (response.authResponse) {
+                                document.location = "{{ url("hwi_oauth_service_redirect", {service: "facebook"}) }}";
+                            } else {
+                                alert('Cancelled.');
+                            }
+                        }, {scope: 'email'});
+                    }
+                });
+            }
+        </script>
+
+
+
+
+
+        <p>
+            <a href="#" onclick="fb_login();">Facebook Connect Button (Dialog)</a>
+        </p>
+
+        {# Bonus: Show all available login link in HWIOAuthBundle #}
+        {% render(controller('HWIOAuthBundle:Connect:connect')) %}
+
+    <div id="conteneur">
+
+        <div id="contenu">
+
+
+            <div id="page">
+
+                <div class="container">
+                    <div class="col-sm-3"></div>
+                    <form class="form-signin col-sm-6" role="form" method="post" action="membres.html">
+                        <h2 class="form-signin-heading" style="text-align:center;color:#FFFFFF; font-weight:bold; font-variant:small-caps">Connexion</h2>
+                        <div class="form-group">
+
+                            <a href="http://www.facebook.com/sharer.php?u=http://VotreURL.com&t=Votre%20message%20ici.">
+                                <img src="{{ asset('img/face.png') }}" style="width:250px"></a>
+                            <a href="http://twitter.com/home?status=Votre%20Tweet%20ici:%20http://VotreURL.com">
+                                <img src="{{ asset('img/twitter.png') }}" style="width:250px;margin-left:40px" />
+                            </a>
+                        </div>
+                        <div class="form-group"><h2 style="text-align:center;color:#FFFFFF; font-variant:small-caps">OR</h2>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Login" name="login" required autofocus>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="password" class="form-control" name="mail"placeholder="Password" required>
+                        </div>
+
+                        <div class="form-group">
+                            <button class="btn btn-success" name="authentification"type="submit">Se connecter</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+        <footer>
+            <div id="bar"></div>
+            <p> En cliquant sur ​​"S'inscrire",
+                vous acceptez les Conditions générales d'utilisation de GoldLink
+                pour le Pays de votre Résidence. S'il vous plaît examiner aussi notre
+                Politique de confidentialité
+            </p>
+            <p>
+                <a href="copyrigth.php" class="orange"> Copyrigth </a>
+                <span class="separator">|</span>
+                <a href="developpeur.php" > Developpeur </a>
+                <span class="separator">|</span>
+                <a href="utilisation.php"> Condition d'Utilisation </a>
+            </p>
+        </footer>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('js/jquery.js') }}"
+{% endblock %}
+
+
+

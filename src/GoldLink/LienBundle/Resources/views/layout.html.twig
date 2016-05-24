@@ -1,0 +1,24 @@
+{% extends 'GoldLinkUserBundle::layout.html.twig' %}
+{% block stylesheets %}
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/boostrap.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/animate.css') }}">
+{% endblock %}
+{% block body %}
+    {{ parent() }}
+    {% block nav %}
+        <li class="select"><a href="{{ path('acces_membres') }}">Actualités</a></li>
+        <li><a href="#">Réseaux</a></li>
+        <li><a href="{{ path('Gestion_Lien') }}">Gerer mes liens</a></li>
+        <li><a href="{{ path('gold_link_user_parametre') }}">Paramètres du Compte</a></li>
+    {% endblock %}
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+{% endblock %}
+
+{% block scriptfooter %}
+    <script type="text/javascript" src="{{ asset('js/jquery.js') }}"></script>
+{% endblock %}

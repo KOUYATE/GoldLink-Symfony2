@@ -1,0 +1,122 @@
+{% extends 'GoldLinkLienBundle::layout.html.twig' %}
+
+{% block body %}
+    {% block header %}
+        {{ parent() }}
+    {% endblock %}
+    {% block page %}
+
+        {% block navbar %} {{ parent() }} {% endblock %}
+        {% block contenu %}
+            <div id="contenu" class="fond">
+
+
+
+     <div id="legend_titre2"><legend>Ajout de Lien</legend></div>
+                {% if save.success is defined  %}
+                    <b><pre class="alert alert-success">Le lien a été ajouter dans votre Bibliothèque avec succès </pre>
+                    </b>
+                {% elseif save.url is defined %}
+                   <b> <pre class="alert alert-danger">Erreur : Url non Valide ou le document n'est pas référencer </pre>
+                   </b>
+                       {% endif %}
+                {% if save.success is defined  %}
+                    {% set lien = save.lien %}
+                    <div class="container">
+                        <div class="panel panel-primary taille">
+                            <div class="panel-heading">Recaputilatif du Lien crée</div>
+                            <div class="panel-body">
+                                <form class="form-control-static" role="form" method="post">
+                                    <table class="table">
+                                        <tr>
+                                            <th>Titre</th>
+                                            <th>Url</th>
+                                            <th>Publier</th>
+                                            <th>Groupes</th>
+                                            <th>Valider</th>
+                                        </tr>
+                                        <tr>
+                                            <td><a href="{{ lien.url }}" target="_blank">{{ lien.titre }}</a></td>
+                                            <td><a href="{{ lien.url }}" target="_blank">{{ lien.url }}</a></td>
+                                            <td><select name="option" class="form-control">
+                                                    <option value="profil">Dans votre propre journal</option>
+                                                    <option value="groupe">Dans un groupe</option>
+                                                </select></td>
+                                            <td>
+                                                <select name="group" class="form-control">
+                                                    {% for groupe in save.adherantGroupe %}
+                                                        <option value="{{ groupe.groupeId }}">{{ groupe.nomDuGroupe }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <button name="publier" class="btn btn-success">Publier</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <input type="hidden" name="lienId" value="{{ lien.id }}"/>
+                                </form>
+                            </div>
+                            <div class="panel-footer">
+                                <a href="{{ path('Supprimer_Lien',{ id : lien.id }) }}" class="btn btn-danger">Supprimer</a>
+                                <a href="{{ path('Modifier_Lien',{id : lien.id }) }}" class="btn btn-info">Modifier</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+    <form action="" method="post" class="form">
+        <label for="">Titre du Lien</label>
+        <input type="text" class="form-control" name="titre"placeholder="Titre du lien" required /><br>
+        <label>Url</label>
+        <input type="text" class="form-control"name="url"placeholder="Url associer" required /><br>
+        {% if save.errors.thematique is defined  %}
+            <label for="">Thematique invalide</label>
+        {% endif %}
+        <label for="">Thematique</label>
+        <select name="thematiqueId"  class="form-control">
+            {% for thematique in thematiques  %}
+                <option value="{{ thematique.id }}">{{ thematique.libelleThematique }}</option>
+            {% endfor %}
+        </select><br>
+        {% if save.errors.thematique is defined  %}
+            <label for="">Visibilite invalide</label>
+        {% endif %}
+        <label for="">Visibilité</label>
+        <select name="visibiliteId" class="form-control" >
+            {% for visibilite in visibilites  %}
+                <option value="{{ visibilite.id }}">{{ visibilite.libelle }}</option>
+            {% endfor %}
+        </select><br>
+        <textarea name="tags" id="" cols="30" rows="3" placeholder="veuillez saisir vos tags ici ..."class="form-control"></textarea><br>
+        <button name="sauvegarder" class="btn btn-success glyphicon glyphicon-thumbs-up btn-lg">&nbsp;Validez</button>
+
+    </form>
+
+  </div>
+{% endblock %}
+{% endblock %}
+    {% block footer %}
+        {{ parent() }}
+    {% endblock %}
+{% endblock %}
+{% block stylesheets %}
+     {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/animate.css') }}"/>
+    <style type="text/css">
+        .form input{
+            width: 50%;
+        }
+        .form select{
+            width: 50%;
+        }
+        .form textarea{
+            width: 50%;
+        }
+
+        .taille{
+            width: 90%;
+        }
+
+    </style>
+{% endblock %}

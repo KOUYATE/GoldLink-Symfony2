@@ -1,0 +1,26 @@
+parameters:
+#    gold_link_lien.example.class: GoldLink\LienBundle\Example
+
+services:
+#    gold_link_lien.example:
+#        class: %gold_link_lien.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
+    goldlink.admin.parametre:
+        class: GoldLink\LienBundle\Admin\ParametreAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: Liens | Url, label: Paramètre des Liens }
+        arguments: [null, GoldLink\LienBundle\Entity\Parametre, null ]
+
+
+    goldlink.admin.thematique:
+            class: GoldLink\LienBundle\Admin\ThematiqueAdmin
+            tags:
+                - { name: sonata.admin, manager_type: orm, group: Liens | Url, label: Thématique des Liens }
+            arguments: [null, GoldLink\LienBundle\Entity\Thematique, null ]
+
+    goldlink.admin.visibilite:
+                class: GoldLink\LienBundle\Admin\VisibiliteAdmin
+                tags:
+                    - { name: sonata.admin, manager_type: orm, group: Liens | Url, label: Visibilité des Liens }
+                arguments: [null, GoldLink\LienBundle\Entity\Visibilite, null ]
+

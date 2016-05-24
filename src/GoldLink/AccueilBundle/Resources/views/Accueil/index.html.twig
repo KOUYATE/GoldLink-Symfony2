@@ -1,0 +1,50 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}GoldLink - ACCUEIL{% endblock %}
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/boostrap.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/goldlink.css') }}">
+
+{% endblock %}
+
+{% block body %}
+    <div id="header-transparent">
+        <a href="{{ path('index') }}" class="nom_site">
+            <img src="{{ asset('img/icon3.png') }}" style="margin-left:3em;margin-right:1em" />GoldLink</a>
+        <a id="log" href={{ path('hwi_oauth_connect') }}><img src="{{ asset('img/login.png') }}" /><span>Se connecter</span></a>
+    </div>
+
+    <div id="conteneur">
+
+
+        <div id="contenu">
+            <div id="thumb">
+                <p>Bienvenue dans le meilleur du WEB...</p>
+                <p> GoldLink est un Réseau Social de Stockage et de Partage de Liens entre Utilisateurs et dans les autres Réseaux  Sociaux ! </p>
+                <br><br>
+                <br><br>
+                <a href="{{ path('fos_user_registration_register') }}" class="btn btn-success btn-lg">Nous Rejoindre</a>
+
+            </div>
+        </div>
+
+        <footer>
+            <div id="bar"></div>
+            <p> En cliquant sur ​​"S'inscrire",
+                vous acceptez les Conditions générales d'utilisation de GoldLink
+                pour le Pays de votre Résidence. S'il vous plaît examiner aussi notre
+                Politique de confidentialité
+            </p>
+            <p>
+                <a href="#" class="orange"> Copyrigth </a>
+                <span class="separator">|</span>
+                <a href="#" > Développeur </a>
+                <span class="separator">|</span>
+                <a href="#"> Conditions d'Utilisations </a>
+            </p>
+        </footer>
+
+    </div>
+{% endblock %}

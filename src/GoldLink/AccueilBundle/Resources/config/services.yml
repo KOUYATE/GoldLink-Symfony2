@@ -1,0 +1,7 @@
+parameters:
+#    gold_link_accueil.example.class: GoldLink\AccueilBundle\Example
+
+services:
+#    gold_link_accueil.example:
+#        class: %gold_link_accueil.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

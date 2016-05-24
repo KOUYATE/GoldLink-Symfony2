@@ -1,0 +1,123 @@
+{% extends 'GoldLinkLienBundle::layout.html.twig' %}
+
+{% block body %}
+    {% block header %}
+        {{ parent() }}
+    {% endblock %}
+    {% block page %}
+
+        {% block navbar %} {{ parent() }} {% endblock %}
+        {% block contenu %}
+<div id="contenu" class="fond">
+        <a href="{{ path('Ajouter_Lien') }}">Crée un lien</a>
+        <div class="panel panel-info">
+            <div class="panel-heading">Recherche Avancé</div>
+            <table class="table-bordered table arrow">
+                <tr class="info">
+                    <th colspan="3" >Categorie</th>
+                    <th colspan="4">Filtrage</th>
+                    <th colspan="2">Ordonnee par ordre</th>
+                </tr>
+                <tr>
+                    <td>
+                        <label>personnel</label>
+                    </td>
+                    <td>
+                        <label>groupe</label>
+                    </td>
+                    <td>
+                        <label>public</label>
+                    </td>
+                    <td>
+                        <label>date</label>
+                    </td>
+                    <td>
+                        <label for="">note</label>
+                    </td>
+                    <td>
+                        <label for="">clics</label>
+                    </td>
+                    <td>
+                        <label for="">popularite</label>
+                    </td>
+                    <td>
+                        <label for="">Croissant</label>
+                    </td>
+                    <td>
+                        <label for="">Decroissant</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td> <input type="radio" name="categorie" value="personnel"/> </td>
+                    <td> <input type="radio" name="categorie" value="groupe"/></td>
+                    <td> <input type="radio" name="categorie" value="public"/></td>
+                    <td> <input type="radio" name="filtrage" value="date"/></td>
+                    <td> <input type="radio" name="filtrage" value="note"/> </td>
+                    <td> <input type="radio" name="filtrage" value="clics"/></td>
+                    <td> <input type="radio" name="filtrage" value="popularite"/></td>
+                    <td><input type="radio" name="ordre" value="asc"/></td>
+                    <td><input type="radio" name="ordre" value="desc"/></td>
+                </tr>
+            </table>
+
+        </div>
+
+            <div class="form-group">
+                <button id="rechercher" class="btn btn-info">rechercher</button>
+            </div>
+
+            <br><br>
+        <div id="loader"></div>
+        <div class="resultat-recherche"></div>
+
+    </div>
+
+    {% endblock %}
+{% endblock %}
+    {% endblock %}
+
+{% block scriptfooter %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $resultat = $('.resultat-recherche');
+        $loader = $('#loader');
+        $loader.hide();
+        $('#rechercher').click(function(){
+            function getByName(name){
+                $elements = document.getElementsByName(name);
+                for(var i in $elements){
+                    if($elements[i].checked){
+                        return $elements[i].value;
+                    }
+                }
+                return null;
+            }
+            var categorie = getByName('categorie');
+            var filtrage  = getByName('filtrage');
+            var ordre     = getByName('ordre');
+            if(categorie != null && filtrage != null && ordre != null){
+                $loader.html('<img src="{{ asset('img/loading.gif') }}">');
+                $loader.show();
+                var url = "recherche/"+filtrage+"/"+categorie+"/"+ordre;
+                $.get(url,function(content){
+                    $loader.hide();
+                    $loader.html();
+
+                    $resultat.html('<div class="animated fadeInUpBig">'+content+'</div>');
+                });
+            }
+            return false;
+        });
+
+    </script>
+{% endblock %}
+
+
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/animate.css') }}"/>
+
+{% endblock %}

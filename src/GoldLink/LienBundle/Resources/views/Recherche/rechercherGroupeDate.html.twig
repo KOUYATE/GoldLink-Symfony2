@@ -1,0 +1,46 @@
+
+    <table class="table-bordered table arrow">
+        <tr>
+            <th>Titre</th>
+            <th>Url</th>
+            <th>Date creation</th>
+            <th>Heure creation</th>
+            <th>Publier par :</th>
+            <th>Date Publication :</th>
+            <th>Groupe</th>
+            <th>Edition</th>
+            <th>Suppression</th>
+            <th>Partager</th>
+
+        </tr>
+        {% for lien in result %}
+            <tr>
+                <td>{{ lien.publicationGroupe.lien.titre }}</td>
+                <td><a href="{{ lien.publicationGroupe.lien.url }}">{{ lien.publicationGroupe.lien.url }}</a></td>
+                <td>{{ lien.publicationGroupe.lien.dateCreation| date('d/m/Y') }}</td>
+                <td>{{ lien.publicationGroupe.lien.dateCreation| date('h') }} H {{ lien.publicationGroupe.lien.dateCreation| date('i') }}</td>
+                <td>
+                    <a href="#">{{ lien.publicationGroupe.utilisateur.username }}</a>
+                </td>
+                <td>
+                    {{ lien.publicationGroupe.date | date('d/m/Y') }} à
+                    {{ lien.publicationGroupe.date| date('h') }} H {{ lien.publicationGroupe.date| date('i') }}
+                </td>
+                <td>
+                    <a href="#">{{ lien.publicationGroupe.groupe.nomDugroupe }}</a>
+                </td>
+                <td>
+                    <a href="{{ path('Modifier_Lien',{id : lien.publicationGroupe.lien.id }) }}" class="btn btn-info">Edidter</a>
+                </td>
+                <td>
+                    <a href="{{ path('Supprimer_Lien',{id : lien.publicationGroupe.lien.id }) }}" class="btn btn-danger">Supprimer</a>
+                </td>
+                <td>
+                    <a href="{{ path('Partager_Lien',{id : lien.publicationGroupe.lien.id }) }}" class="btn btn-success">Partager</a>
+                </td>
+
+
+            </tr>
+        {% endfor %}
+
+    </table>

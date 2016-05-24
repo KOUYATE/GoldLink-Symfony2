@@ -1,0 +1,44 @@
+Ajouter_Lien:
+    pattern: /ajouter-lien/
+    defaults: { _controller: GoldLinkLienBundle:Lien:ajouter }
+Gestion_Lien:
+    pattern: /gerer-mes-liens
+    defaults: { _controller: GoldLinkLienBundle:Lien:gestion }
+Recherche_Lien:
+    pattern: /recherche/{type}/{categorie}/{ordre}
+    defaults: { _controller: GoldLinkLienBundle:Ajax:rechercher }
+    requirements:
+        categorie: personnel|thematique|groupe|public
+        type:  date|note|clics|popularite
+        ordre: desc|asc
+Ajouter_Clique:
+    pattern:  /ajouter-clique
+    defaults: {_controller: GoldLinkLienBundle:Lien:AjouterClique}
+    requirements:
+        _method: POST
+Modifier_Lien:
+    pattern: /modifier-lien/{id}
+    defaults: { _controller: GoldLinkLienBundle:Lien:modifier }
+    requirements:
+        id: \d+
+Ajouter_Autre_Lien:
+    pattern: /ajouter-autre-lien
+    defaults: {_controller: GoldLinkLienBundle:Lien:ajouterAutreLien}
+    requirements:
+        _method: POST
+Noter_Lien:
+    pattern: /noter-lien
+    defaults: {_controller: GoldLinkLienBundle:Lien:noterLien}
+    requirements:
+        _method: POST
+Partager_Lien:
+    pattern: /partager-lien/{id}
+    defaults: {_controller: GoldLinkLienBundle:Lien:partagerLien }
+    requirements:
+        id: \d+
+
+Supprimer_Lien:
+    pattern: /supprimer-lien/{id}
+    defaults: { _controller: GoldLinkLienBundle:Lien:supprimerLien }
+    requirements:
+        id: \d+

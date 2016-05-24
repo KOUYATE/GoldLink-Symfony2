@@ -1,0 +1,24 @@
+<table>
+    <tr>
+        <th>Titre</th>
+        <th>URL</th>
+        <th>Note(Moyenne)</th>
+        <th>Options</th>
+        <th>Mettre une Note</th>
+    </tr>
+{% for recherche in recherches %}
+        {% set element = recherche|first %}
+        <tr>
+            <td>{{ element.LienNote.titre }}</td>
+            <td><a href="{{ element.LienNote.url }}">{{ element.LienNote.url }}</a></td>
+            <td> {{ recherche.moyenne }} </td>
+            {% if element.LienNote.proprietaire.id == userId %}
+            <td>
+                <a href="{{ path('Modifier_Lien',{id:element.LienNote.id}) }}">Modifier se Lien</a>
+            </td>
+                <td></td>
+            {% endif %}
+        </tr>
+{% endfor %}
+</table>
+
