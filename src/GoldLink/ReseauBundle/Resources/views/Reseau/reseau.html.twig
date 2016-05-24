@@ -1,0 +1,271 @@
+
+{% extends "GoldLinkUserBundle::layout.html.twig" %}
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/boostrap.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/jquery-ui.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/ajout.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/animate.css') }}"/>
+{% endblock %}
+
+
+
+
+    {% block body %}
+        {% block header %} {{ parent() }} {% endblock %}
+        {% block page %}
+            {% block navbar %} {{ parent() }}{% endblock %}
+            {% block contenu %}
+
+                <div id="contenu" class="fond">
+                    <div id="legend_titre2">
+                        <legend> Mon Réseau </legend>
+                    </div>
+                    {% if sup is defined %}
+                        <pre class="alert alert-success">Suppression effectuer</pre>
+                    {% endif %}
+                    {% if ajouter is defined and ajouter==true %}
+                        <pre class="alert alert-success">Groupe créer avec succès </pre>
+                    {% endif %}
+                    {% if erreur is defined %}
+                        <pre class="alert alert-danger">Erreur : Vous suivez déjà ce groupe.</pre>
+                    {% elseif success is defined and success==true %}
+                    <pre class="alert alert-success">Vous avez adhérer au groupe.</pre>
+                    {% endif %}
+                <div id="tabs">
+                    <ul>
+                        <li><a href="#tabs-1">Mes Groupes</a></li>
+                        <li><a href="#tabs-2">Ajouter un Groupe</a></li>
+                        <li><a href="#tabs-3">Rechercher un Groupe</a></li>
+                        <li><a href="#tabs-4">Voir Les Groupes </a></li>
+                        {% if  nombreDemande is defined and nombreDemande > 0 %}
+                            <li><a href="#tabs-5">Vous avez ({{ nombreDemande }}) démande(s)</a></li>
+                        {% endif %}
+                    </ul>
+                    <div id="tabs-1">
+
+                        <legend>La liste de mes  groupes</legend>
+                        <div class="panel panel-primary taille">
+                            <div class="panel-heading">Mes réseaux Administrés</div>
+                            <div class="panel-body">
+                                <form class="form-control-static" role="form" method="post">
+                                    <table class="table">
+                                        <tr>
+                                            <th>Nom du Réseau</th>
+                                            <th>Description</th>
+                                            <th>Date de création</th>
+                                            <th>Droit</th>
+                                            <th>Modifier</th>
+                                            <th>Supprimer</th>
+                                        </tr>
+                            {% if mesgroupes is defined and mesgroupes|length > 0 %}
+                                {% for a in mesgroupes %}
+
+                                    <tr>
+                                        <td><a style="color: blue " href="{{path('groupe_voir',{'id': a.groupe.id })}}">
+
+                                                {{ a.groupe.nomDuGroupe }} </a> </td>
+                                         <td>{{ a.groupe.description }}</td>
+                                        </td> <td>{{ a.groupe.dateCreation|date('d/m/Y') }}</td>
+                                       </td> <td>{{ a.groupe.droit }}</td>
+
+
+                                        <td> <a href="{{ path('groupe_modifier', { 'id': a.groupe.id })}}" data-e = "{{ a.groupe.id }}"
+                                                class="btn btn-info" class="modif" >Modifier Le Groupe </a></td>
+
+                                        <td> <a href="{{ path('groupe_supprimer', { 'id': a.groupe.id }) }}" class="btn btn-danger">
+                                                <i class="glyphicon glyphicon-trash"> </i>Supprimer Le Groupe </a> </td>
+                                    </tr>
+
+                                    <div class="form-h" data-aff = "{{ a.groupe.id }}"></div>
+
+                                {% endfor %}
+
+
+                            {% else %}
+                                <tr>
+                                    <td><pre class="alert alert-info">Aucun groupe  n'a été trouvé.</pre></td>
+                                </tr>
+                            {% endif %}
+                        </table>
+                                    </form></div></div>
+                    </div>
+
+                    <div id="tabs-2">
+                        <h3>Création d'un groupe</h3>
+                        <form method="post" {{ form_enctype(form) }} class="well">
+                            {{ form_widget(form) }}
+                            <button type="submit" name="ajouter" class="btn btn-info" value="ajouter">
+                                <i class="glyphicon glyphicon-ok"></i>&nbsp;Enregistrer</button>
+                        </form>
+                    </div>
+
+
+                    <div id="tabs-3">
+                        <h3>Recherche  d'un groupe</h3>
+                        <form method="post" action="{{ path('groupe_rechercher') }}" class="well">
+                            <label>Nom </label>
+                            <input type="text" name="mot" id="mot" required />&nbsp;<br>
+                            <button type="submit" name="rechercher" id="rechercher" class="btn btn-info">
+                                <i class="glyphicon glyphicon-ok"></i>&nbsp;Rechercher</button>
+                        </form>
+                        <div id="loader"></div>
+                        <div id="reponse"></div>
+                    </div>
+
+                    <div id="tabs-4">
+
+                        <div class="panel panel-primary taille">
+                            <div class="panel-heading">Les réseaux que vous pouvez suivre</div>
+                            <div class="panel-body">
+                                <form class="form-control-static" role="form" method="post">
+                                    <table class="table">
+                                        <tr>
+                                            <th>Nom du Réseau</th>
+                                            <th>Description</th>
+                                            <th>Date de création</th>
+                                            <th>Droit</th>
+                                            <th>Suivre</th>
+                                            <th>Accéder</th>
+                                        </tr>
+
+                            {% if all is defined and all|length > 0 %}
+                                {% for a in all %}
+
+                                    <tr>
+                                        <td>{{ a.nomDuGroupe }}</td>
+                                         <td>{{ a.description }}</td>
+                                        </td> <td>{{ a.dateCreation|date('d/m/Y') }}</td>
+                                       </td> <td>{{ a.droit }}</td>
+
+                                        <td><a href="{{ path('groupe_suivre', { 'id': a.id }) }}" class="btn btn-info">Suivre Le Groupe </a></td>
+                                        <td> <a href="{{path('groupe_voir',{'id': a.id })}}" class="btn btn-success"> Voir Le Groupe </a></td>
+
+                                    </tr>
+                                {% endfor %}
+
+                            {% else %}
+                                <tr class="alert alert-success">
+                                    <td>Aucun groupe  n'a été trouvé.</td>
+                                </tr>
+                            {% endif %}
+
+                        </table>
+                                    </form></div></div>
+
+                    </div>
+
+
+
+                    {% if nombreDemande is defined and nombreDemande %}
+                        <div id="tabs-5">
+                            <div class="panel panel-primary">
+                                <div class="panel-heading">
+                                    Liste des demandes
+                                </div>
+                                <div class="panel-body">
+                                    <table class="table-responsive table">
+                                        {% for demande in demandes %}
+                                            <tr>
+                                                <td><a href="{{ path('profil_user',{username : demande.emetteur.username }) }}" style="color: #cd0a0a"><strong>{{ demande.emetteur.username }}</strong></a>
+                                        <span style="color: #a94442"> <em>veux rejoindre le groupe</em>
+                                            <a href="{{ path('groupe_voir',{id : demande.groupe.id })}}" style="color:#147E46">{{ demande.groupe.nomDuGroupe }}</a>
+                                        </span>
+
+                                                </td>
+                                                <td>
+                                                    <a href="{{ path('groupe_demande',{type : 'oui', groupe: demande.groupe.id , emetteur : demande.emetteur.id }) }}" class="btn btn-info  glyphicon glyphicon-ok"> Acceptez </a>
+                                                </td>
+                                                <td>
+                                                    <a href="{{ path('groupe_demande',{type : 'non', groupe: demande.groupe.id , emetteur : demande.emetteur.id }) }}" class="btn btn-danger glyphicon glyphicon-remove"> Refuser </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    {% endif %}
+
+
+
+                </div>
+                </div>
+
+            {% endblock %}
+        {% endblock %}
+
+        {% block footer %} {{ parent() }} {% endblock %}
+
+        {% endblock body %}
+
+
+        {% block javascripts %} {{ parent() }}
+            <script type="text/javascript" src="{{ asset('js/jquery-ui.js') }}"></script>
+            <script>$(function() {
+                    $( "#tabs" ).tabs();
+                });</script>
+            <script>
+                $(function(){
+                    var $div = $('div.form-h');
+                    $('a.modif').each(function(){
+                        var $a = $(this);
+
+                        $a.click(function(){
+                            $div.each(function(){
+                                var $d = $(this);
+                                if($a.data('e') === $d.data('aff') ){
+                                    $.get($a.attr('href'),function(formulaire){
+                                        $d.html(formulaire);
+                                        $('button.modif').each(function(){
+                                            var $b = $(this);
+
+                                            $b.click(function(){
+                                                var $info = [];
+                                                var i =0;
+                                                    $d.find('form>input,form>select').each(function(){
+                                                        $info[i] = $(this).val();
+                                                        i = i + 1;
+                                                    });
+                                                $.post($b.data('url'),{ nom : $info[0] , description : $info[1] , droit : $info[2] },function(reponse){
+                                                    location.href = location.href;
+                                                });
+
+                                                return false;
+                                            });
+
+                                        });
+                                    });
+                                }
+                            });
+                            return false;
+                        });
+                    });
+                });
+            </script>
+
+            <script type="text/javascript">
+                var $boutonRecherche =  $('#rechercher');
+                var $motRechercher = $('#mot');
+                var $reponse = $('#reponse');
+                var $loader = $('#loader');
+                $boutonRecherche.click(function(){
+
+                    var variable = "elementRechercher";
+                    var url = '{{ path( "Ajax_Rechercher_Groupe" , { groupe : "elementRechercher" }) }}';
+                    url = url.replace(variable,$motRechercher.val());
+
+                    $loader.html('<img src="{{ asset('img/loading.gif') }}" />');
+
+                    $.get(url, function(reponse){
+                        $loader.html('');
+                        $reponse.html('<div class="animated fadeInUp" >'+reponse+'</div>');
+                    });
+
+                    return false;
+                });
+
+            </script>
+        {% endblock %}
+

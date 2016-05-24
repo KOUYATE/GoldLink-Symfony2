@@ -1,0 +1,156 @@
+{% for donnee in donnees %}
+    {% if donnee.datePublication is defined %}
+
+        <i class="glyphicon glyphicon-share"></i>&nbsp; <span>
+                        <a href="{{ donnee.publicationLien.url }}" data-clique="{{ path('Ajouter_Clique',{ idLien : donnee.publicationLien.id}) }}"
+                           target="_blank">{{ donnee.publicationLien.titre }}</a>&nbsp;
+                        Partager par <a href="#">{{ donnee.publicationUser.username }}</a> {{  donnee.datePublication.date  }}</span>
+        <br/><br><label>Lien : </label>
+        <a href="{{ donnee.publicationLien.url }}" target="_blank" onclick="ajouterClique('{{ donnee.publicationLien.id }}')">
+            {{ donnee.publicationLien.url }}</a>
+        <br />
+        <div>
+            <a href="" class="btn btn-success" data-autreLien = "{{ donnee.publicationLien.id }}"
+               onclick="afficherFormAjout('{{ 'form' ~ donnee.publicationLien.id }}');
+                       fermerForm('{{ 'notation'~ donnee.publicationLien.id }}');fermerForm('{{ 'partager'~ donnee.publicationLien.id }}') ">
+                <i class="glyphicon glyphicon-plus"></i>&nbsp;Ajouter</a>
+            <a href="" class="btn btn-info" onclick="afficherFormAjout('{{ 'notation'~ donnee.publicationLien.id }}');
+                    fermerForm('{{ 'form' ~ donnee.publicationLien.id }}');fermerForm('{{ 'partager'~ donnee.publicationLien.id }}')">
+                <i class="glyphicon glyphicon-star"></i>&nbsp;Noter</a>
+            <a href="" class="btn btn-info" onclick="afficherFormAjout('{{ 'partager'~ donnee.publicationLien.id }}');
+                    fermerForm('{{ 'form' ~ donnee.publicationLien.id }}');fermerForm('{{ 'notation'~ donnee.publicationLien.id }}')"><i class="glyphicon glyphicon-share"></i>&nbsp;Partager </a>
+        </div><br />
+        <div class="{{ 'loaderform' ~ donnee.publicationLien.id }}" style="display: none">
+            <img src="{{ asset('img/loading.gif') }}">
+        </div>
+        <div class="{{ 'loader' ~ donnee.publicationLien.id }}" style="display: none">
+            <img src="{{ asset('img/loading.gif') }}">
+        </div>
+
+        <div id="{{ 'form' ~ donnee.publicationLien.id }}" class="animated bounceInDown" style="display: none">
+            <form action="{{ path('Ajouter_Autre_Lien') }}" method="post" class="form-ajout-lien"
+                  onsubmit="return ajoutNouveauLien('{{ 'form' ~ donnee.publicationLien.id }}')">
+
+                <input type="hidden" name="url"  value="{{ donnee.publicationLien.url  }}" readonly id="{{ 'form' ~ donnee.publicationLien.id ~ 'url' }}"/>
+                <label for="{{ 'form' ~ donnee.publicationLien.id ~ 'titre' }}">Titre du lien </label>
+                <input type="text"  name="titre" placeholder="titre"required class="form-control"
+                       id="{{ 'form' ~ donnee.publicationLien.id ~ 'titre' }}"/>
+                <label for="{{ 'form' ~ donnee.publicationLien.id ~ 'theme' }}">Thème  </label>
+                <select name="idThematique" class="form-control" required id="{{ 'form' ~ donnee.publicationLien.id ~ 'thematique' }}">
+                    {% for thematique in thematiques %}
+                        <option value="{{ thematique.id }}">{{ thematique.libelleThematique }}</option>
+                    {% endfor %}
+                </select>
+                <label for="{{ 'form' ~ donnee.publicationLien.id ~ 'visibilite' }}">Visibilité </label>
+                <select name="idVisibilite" class="form-control" required id="{{ 'form' ~ donnee.publicationLien.id ~ 'visibilite' }}">
+                    {% for visibilite in visibilites %}
+                        <option value="{{ visibilite.id }}">{{ visibilite.libelle }}</option>
+                    {% endfor %}
+                </select>
+
+                <!--  <label for="">Vos tags</label>
+                        <select name="optionTag">
+                            <option value="null"> ... </option>
+                        {#{% for tag in tags %}
+                                <option >{{ tag.tag }}</option>
+                            {% endfor %} #}
+                        </select>
+
+                        <input type="text" name="tag" placeholder="tag"/> -->
+                <input type="hidden" name="url"  value="{{ donnee.publicationLien.url  }}"/>
+                <button name="validez" class="btn btn-warning"><i class="glyphicon glyphicon-ok-circle"></i> Validez </button>
+            </form>
+
+        </div>
+        <div class="animated rotateIn" id="{{ 'notation'~ donnee.publicationLien.id  }}" style="display: none">
+            <ul class="{{ donnee.publicationLien.id ~ 'ul' }}" onmouseout="ulMouseOut('{{ donnee.publicationLien.id}}')">
+                <li>
+                    <label></label>
+                    <a href="" title="Note : 1 sur 5"><i class="glyphicon glyphicon-star"
+                                                         id="{{ donnee.publicationLien.id ~ '1' }}"
+                                                         onmouseover="notation('{{ donnee.publicationLien.id ~ '1' }},{{ donnee.publicationLien.id  }}')"
+                                                         onmouseout="mouseOut('{{ donnee.publicationLien.id ~ '1' }},{{ donnee.publicationLien.id  }}')"
+                                                         onclick="return simuleMouseOver('{{ donnee.publicationLien.id ~ '1' }}')"></i> </a>
+                </li>
+                <li>
+                    <label></label>
+                    <a href="" title="Note : 2 sur 5"><i class="glyphicon glyphicon-star"
+                                                         id="{{ donnee.publicationLien.id ~ '2' }}"
+                                                         onmouseover="notation('{{ donnee.publicationLien.id ~ '2' }},{{ donnee.publicationLien.id  }}')"
+                                                         onmouseout="mouseOut('{{ donnee.publicationLien.id ~ '2' }},{{ donnee.publicationLien.id  }}')"
+                                                         onclick="return simuleMouseOver('{{ donnee.publicationLien.id ~ '2' }}')"></i> </a>
+                </li>
+                <li>
+                    <label></label>
+                    <a href="" title="Note : 3 sur 5"><i class="glyphicon glyphicon-star"
+                                                         id="{{ donnee.publicationLien.id ~ '3' }}"
+                                                         onmouseover="notation('{{ donnee.publicationLien.id ~ '3' }},{{ donnee.publicationLien.id }}')"
+                                                         onmouseout="mouseOut('{{ donnee.publicationLien.id ~ '3' }},{{ donnee.publicationLien.id  }}')"
+                                                         onclick="return simuleMouseOver('{{ donnee.publicationLien.id ~ '3' }}')"></i> </a>
+                </li>
+                <li>
+                    <label></label>
+                    <a href="" title="Note : 4 sur 5"><i class="glyphicon glyphicon-star"
+                                                         id="{{ donnee.publicationLien.id ~ '4' }}"
+                                                         onmouseover="notation('{{ donnee.publicationLien.id ~ '4' }},{{ donnee.publicationLien.id  }}')"
+                                                         onmouseout="mouseOut('{{ donnee.publicationLien.id ~ '4' }},{{ donnee.publicationLien.id  }}')"
+                                                         onclick="return simuleMouseOver('{{ donnee.publicationLien.id ~ '4' }}')"></i> </a>
+                </li>
+                <li>
+                    <label></label>
+                    <a href="" title="Note : 5 sur 5"><i class="glyphicon glyphicon-star"
+                                                         id="{{ donnee.publicationLien.id ~ '5' }}"
+                                                         onmouseover="notation('{{ donnee.publicationLien.id ~ '5' }},{{ donnee.publicationLien.id  }}')"
+                                                         onmouseout="mouseOut('{{ donnee.publicationLien.id ~ '5' }},{{ donnee.publicationLien.id  }}')"
+                                                         onclick="return simuleMouseOver('{{ donnee.publicationLien.id ~ '5' }}')"></i> </a>
+                </li>
+            </ul>
+            <a href="" onclick="return noterLien('{{ donnee.publicationLien.id }}')" class="btn btn-warning"><i class="glyphicon glyphicon-ok-circle"></i>&nbsp;
+                Noter</a>
+        </div>
+        <div class="animated rotateIn" id="{{ 'partager'~ donnee.publicationLien.id }}" style="display: none">
+            <label>Partager le lien sur </label><br>
+            <!--   <div>
+                    <div style="float: left; margin: 0 1em 1em 0" class="fb-share-button" data-href="{{ donnee.publicationLien.url }}" data-type="button"></div>
+                    <div style="float: left"><a href="https://twitter.com/share" data-url="{{ donnee.publicationLien.url }}" class="twitter-share-button" data-related="jasoncosta" data-lang="fr"
+                       data-size="medium" data-count="none">Partager sur Tweeter</a>
+                    </div> -->
+
+        </div>
+        {# <form method="post"  class="form-ajout-lien" onsubmit="partagerLien('{{ donnee.publicationLien.id }}')">
+             <label style="width: 25%">Partager avec ma communauté</label>
+             <select name="groupe"class="form-control" required id="{{ donnee.publicationLien.id ~ 'select' }}">
+
+                     {% for groupe in app.user.groupes %}
+                         <option value="{{ groupe.id }}">{{ groupe.nomDuGroupe }}</option>
+                     {% endfor %}
+
+             </select>
+             <button type="submit" name="" class="btn btn-success">
+                 <i class="glyphicon glyphicon-share"></i>&nbsp;Partager</button>
+         </form> #}
+
+        </div><br>
+        <hr >
+
+    {% else %}
+        <div class="newuser">
+            <div> <i class="glyphicon glyphicon-plus"></i></div>
+
+            <div  class="avatar">
+                <img src="{{ asset(donnee.avatar) }}" alt="utilisateur" />
+            </div>
+            <div>
+                &nbsp;<a href="#">{{  donnee.username }} </a> à rejoint la communauté de <a href="#">GoldLink </a> Le
+                {{ donnee.dateInscription | localizeddate('full', 'none') }} à
+                {{ donnee.dateInscription | localizeddate('none', 'short') }}
+            </div>
+
+        </div>
+        <hr />
+    {% endif %}
+
+{% endfor %}
+<div id="loaderbas" style="display: none">
+    <img src="{{ asset('img/loading.gif') }}" title="chargement" >
+</div>

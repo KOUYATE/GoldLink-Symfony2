@@ -1,0 +1,59 @@
+
+{% extends "GoldLinkUserBundle::layout.html.twig" %}
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/boostrap.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/jquery-ui.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/ajout.css') }}">
+{% endblock %}
+
+
+    {% block body %}
+        {% block header %} {{ parent() }} {% endblock %}
+        {% block page %}
+            {% block navbar %} {{ parent() }}{% endblock %}
+            {% block contenu %}
+
+                <div id="contenu" class="fond">
+                    <div id="legend_titre2">
+                        <legend> Administration Groupe </legend>
+                    </div>
+                    <div>
+                        <legend> <h3>Modifiaction du Groupe</h3> </legend>
+                        {% if success is defined %}
+                            <pre class="alert alert-success">Modification effectuer</pre>
+                        {% endif %}
+
+
+                        {% set a = listes %}
+                        <form method="post" class="well" >
+
+                            <label> Nom du groupe :</label>
+                            <input class="form-control" type="text" name="nom" value="{{ a.nomDuGroupe }}"> <br>
+
+                            <label> Description du groupe</label>
+                            <input class="form-control" type="text" name="description" value="{{ a.description }}">  <br>
+                            <label> Droit </label>
+                            <select name="droit" class="form-control">
+                                <option name="droit">public</option>
+                                <option name="droit">prive</option>
+                            </select> <br>
+                            <button type="submit" name="modifier" class="btn btn-info modif" value="modifier" data-url = "{{path('groupe_modifier' ,{ id : a.id })}}">
+                                <i class="glyphicon glyphicon-ok"></i>&nbsp;Modifier</button>
+                        </form>
+
+
+                    </div>
+                </div>
+
+            {% endblock %}
+
+        {% endblock %}
+
+        {% block footer %} {{ parent() }} {% endblock %}
+
+    {% endblock body %}
+
+        {% block javascripts %} {{ parent() }}
+            <script type="text/javascript" src="{{ asset('js/jquery-ui.js') }}"></script>
+        {% endblock %}

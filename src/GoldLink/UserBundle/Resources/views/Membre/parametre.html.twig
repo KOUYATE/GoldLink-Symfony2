@@ -1,0 +1,107 @@
+{% extends "GoldLinkUserBundle::layout.html.twig" %}
+
+{% block title %}GoldLink{% endblock %}
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/boostrap.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/jquery-ui.css') }}">
+{% endblock %}
+
+{% block body %}
+
+    {% block header %}
+        {{ parent() }}
+    {% endblock %}
+
+    {% block page %}
+
+        {% block navbar %} {{ parent() }} {% endblock %}
+        {% block contenu %}
+            <div id="contenu" class="fond">
+                <div id="legend_titre2">
+                    <legend>Paramétrage de votre Compte & Profil</legend>
+                </div>
+                {% if success is defined and success != '' %}
+                    <div class="alert alert-success">
+                        <b>
+                        {{ success }}
+                            </b>
+                    </div>
+                {% elseif errors is defined %}
+                    <div class="alert alert-danger">
+                        <b>
+                            {{ errors }}
+                        </b>
+
+                    </div>
+                {% endif %}
+                <div id="tabs" class="styleParametre">
+                    <ul>
+                        <li><a href="#tabs-1">Profil</a></li>
+                        <li><a href="#tabs-2">Compte</a></li>
+                        <li><a href="#tabs-3">Mot de passe</a></li>
+                    </ul>
+                    <div id="tabs-1">
+                        <form method="post" action="{{ path('gold_link_user_parametre') }}">
+
+
+                        <input type="text" name="username" required value="{{ app.user.username }}" />
+                        <span>Name</span>
+                        <input type="text" name="biographie" required value="{{ app.user.biographie }}" />
+                        <span>Bio</span>
+
+                        <button type="submit" name="profil_change" value="profil_change" class="btn btn-success">
+                            <i class="glyphicon glyphicon-ok"></i>&nbsp;Enregistrer</button>
+                            </form>
+                    </div>
+
+                    <div id="tabs-2">
+                        <form method="post" action="{{ path('gold_link_user_parametre') }}">
+                        <input type="email" name="email" required value="{{ app.user.email }}" />
+                        <span>Email</span>
+                        <button type="submit" name="compte_change" value="compte_change" class="btn btn-success">
+                            <i class="glyphicon glyphicon-ok"></i>&nbsp;
+                            Enregistrer</button><hr>
+
+
+                         </form>
+                    </div>
+                    <div id="tabs-3">
+                        <form method="post" action="{{ path('gold_link_user_parametre') }}">
+                        <input type="password" name="old_password" required  />
+                        <span>Mot de passe actuel</span>
+                        <input type="password" name="new_password" required />
+                        <span>Nouveau mot de passe</span>
+                        <input type="password" name="confirme_password" required  />
+                        <span>Confirmez mot de passe</span>
+                        <button type="submit" name="password_change" value="password_change" class="btn btn-success">
+                            <i class="glyphicon glyphicon-ok"></i>&nbsp;Enregistrer</button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <script>
+                function borderNone(id){
+                    var input = document.getElementById("search");
+                    input.style.border = 'none';
+                }
+            </script>
+        {% endblock %}
+
+    {% endblock %}
+
+    {% block footer %} {{ parent() }} {% endblock %}
+
+{% endblock %}
+
+{% block javascripts %} {{ parent() }}
+<script type="text/javascript" src="{{ asset('js/jquery-ui.js') }}"></script>
+<script>$(function() {
+        $( "#tabs" ).tabs();
+    });</script>
+{% endblock %}

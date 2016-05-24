@@ -1,0 +1,442 @@
+{% extends "GoldLinkUserBundle::layout.html.twig" %}
+
+{% block title %}GoldLink{% endblock %}
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/boostrap.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/animate.css') }}">
+{% endblock %}
+
+{% block body %}
+    {% block header %}
+        {{ parent() }}
+    {% endblock %}
+    {% block page %}
+
+        {% block navbar %} {{ parent() }} {% endblock %}
+        {% block contenu %}
+        <div id="contenu" class="fond">
+            <div id="legend_titre2"><legend>Fil d'Actualités</legend></div>
+
+            <div id="file-actualite">
+
+                {% for donnee in donnees %}
+                    {% if donnee.datePublication is defined %}
+
+                        <i class="glyphicon glyphicon-share"></i>&nbsp; <span>
+                        <a href="{{ donnee.publicationLien.url }}" data-clique="{{ path('Ajouter_Clique',{ idLien : donnee.publicationLien.id}) }}"
+                           target="_blank">{{ donnee.publicationLien.titre }}</a>&nbsp;
+                        Partager par <a href="{{ path('profil_user',{'username': donnee.publicationUser.username}) }}">{{ donnee.publicationUser.username }}</a> {{  donnee.datePublication.date  }}</span>
+                        <br/><br><label>Lien : </label>
+                        <a href="{{ donnee.publicationLien.url }}" target="_blank" onclick="ajouterClique('{{ donnee.publicationLien.id }}')">
+                            {{ donnee.publicationLien.url }}</a>
+                        <br />
+                        <div>
+                            <b style="color: green">{{ donnee.publicationLien.cliques | length }} <span style="color: #808080"> cliques |</span> </b>
+                            <b style="color: green">{{ donnee.publicationLien.publication | length }} <span style="color: #808080"> Partage dans la communauté</span> </b>
+                        </div>
+                        <div>
+
+                            <a href="" class="btn btn-success" data-autreLien = "{{ donnee.publicationLien.id }}"
+                                    onclick="afficherFormAjout('{{ 'form' ~ donnee.publicationLien.id }}');
+                                            fermerForm('{{ 'notation'~ donnee.publicationLien.id }}');fermerForm('{{ 'partager'~ donnee.publicationLien.id }}') ">
+                                <i class="glyphicon glyphicon-plus"></i>&nbsp;Ajouter</a>
+
+                            {% if parametre.nombreDeVotant > (donnee.publicationLien.notations | length) %}
+                            <a href="" class="btn btn-info" onclick="afficherFormAjout('{{ 'notation'~ donnee.publicationLien.id }}');
+                                    fermerForm('{{ 'form' ~ donnee.publicationLien.id }}');fermerForm('{{ 'partager'~ donnee.publicationLien.id }}')">
+                                <i class="glyphicon glyphicon-star"></i>&nbsp;Noter</a>
+
+                            {% endif %}
+
+                            <a href="" class="btn btn-info" onclick="afficherFormAjout('{{ 'partager'~ donnee.publicationLien.id }}');
+                                    fermerForm('{{ 'form' ~ donnee.publicationLien.id }}');fermerForm('{{ 'notation'~ donnee.publicationLien.id }}')"><i class="glyphicon glyphicon-share"></i>&nbsp;Partager </a>
+                        </div><br />
+                        <div class="{{ 'loaderform' ~ donnee.publicationLien.id }}" style="display: none">
+                            <img src="{{ asset('img/loading.gif') }}">
+                        </div>
+                        <div class="{{ 'loader' ~ donnee.publicationLien.id }}" style="display: none">
+                            <img src="{{ asset('img/loading.gif') }}">
+                        </div>
+
+                <div id="{{ 'form' ~ donnee.publicationLien.id }}" class="animated bounceInDown" style="display: none">
+                    <form action="{{ path('Ajouter_Autre_Lien') }}" method="post" class="form-ajout-lien"
+                            onsubmit="return ajoutNouveauLien('{{ 'form' ~ donnee.publicationLien.id }}')">
+
+                        <input type="hidden" name="url"  value="{{ donnee.publicationLien.url  }}" readonly id="{{ 'form' ~ donnee.publicationLien.id ~ 'url' }}"/>
+                        <label for="{{ 'form' ~ donnee.publicationLien.id ~ 'titre' }}">Titre du lien </label>
+                        <input type="text"  name="titre" placeholder="titre"required class="form-control"
+                               id="{{ 'form' ~ donnee.publicationLien.id ~ 'titre' }}"/>
+                        <label for="{{ 'form' ~ donnee.publicationLien.id ~ 'theme' }}">Thème  </label>
+                        <select name="idThematique" class="form-control" required id="{{ 'form' ~ donnee.publicationLien.id ~ 'thematique' }}">
+                            {% for thematique in thematiques %}
+                                <option value="{{ thematique.id }}">{{ thematique.libelleThematique }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="{{ 'form' ~ donnee.publicationLien.id ~ 'visibilite' }}">Visibilité </label>
+                        <select name="idVisibilite" class="form-control" required id="{{ 'form' ~ donnee.publicationLien.id ~ 'visibilite' }}">
+                            {% for visibilite in visibilites %}
+                                <option value="{{ visibilite.id }}">{{ visibilite.libelle }}</option>
+                            {% endfor %}
+                        </select>
+
+                      <!--  <label for="">Vos tags</label>
+                        <select name="optionTag">
+                            <option value="null"> ... </option>
+                        {#{% for tag in tags %}
+                                <option >{{ tag.tag }}</option>
+                            {% endfor %} #}
+                        </select>
+
+                        <input type="text" name="tag" placeholder="tag"/> -->
+                        <input type="hidden" name="url"  value="{{ donnee.publicationLien.url  }}"/>
+                        <button name="validez" class="btn btn-warning"><i class="glyphicon glyphicon-ok-circle"></i> Validez </button>
+                    </form>
+
+                </div>
+
+                <div class="animated rotateIn" id="{{ 'notation'~ donnee.publicationLien.id  }}" style="display: none">
+                    <ul class="{{ donnee.publicationLien.id ~ 'ul' }}" onmouseout="ulMouseOut('{{ donnee.publicationLien.id}}')">
+                        {% for i  in 1..parametre.NoteMaximale %}
+                            <li>
+                                <label></label>
+                                <a href="" title="{{ 'Note : '~i~' sur '~parametre.NoteMaximale }}">
+                                    <i class="glyphicon glyphicon-star"
+                                       id="{{ donnee.publicationLien.id ~ i }}"
+                                       onmouseover="notation('{{ donnee.publicationLien.id ~ i }},{{ donnee.publicationLien.id  }}')"
+                                       onmouseout="mouseOut('{{ donnee.publicationLien.id ~ i }},{{ donnee.publicationLien.id  }}')"
+                                       onclick="return simuleMouseOver('{{ donnee.publicationLien.id ~ i }}')"></i>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <a href="" onclick="return noterLien('{{ donnee.publicationLien.id }}')" class="btn btn-warning"><i class="glyphicon glyphicon-ok-circle"></i>&nbsp;
+                    Noter</a>
+                </div>
+                <div class="animated rotateIn" id="{{ 'partager'~ donnee.publicationLien.id }}" style="display: none">
+                    <label>Partager le lien sur </label><br>
+
+                    <div style="float: left; margin: 0 1em 1em 0" class="fb-share-button" data-href="{{ donnee.publicationLien.url }}" data-type="button"></div>
+                    <div style="float: left"><a href="https://twitter.com/share" data-url="{{ donnee.publicationLien.url }}" class="twitter-share-button" data-related="jasoncosta" data-lang="fr"
+                       data-size="medium" data-count="none">Partager sur Tweeter</a>
+                    </div>
+
+                   <br>
+
+                    <form method="post" onsubmit="partagerLien('{{ donnee.publicationLien.id }}')">
+                        <div class="form-group">
+                        <label style="margin-left: -152px;margin-top: 1em" >Partager avec ma communauté</label>
+                        <select name="groupe"class="form-control" style="width: 25%" required id="{{ donnee.publicationLien.id ~ 'select' }}">
+
+                                {% for groupe in app.user.groupes %}
+                                    <option value="{{ groupe.grouperAdhesion.id }}">{{ groupe.grouperAdhesion.nomDuGroupe }}</option>
+                                {% endfor %}
+
+                        </select>
+                        <button type="submit" name="" class="btn btn-success" style="margin-top: 1em">
+                            <i class="glyphicon glyphicon-share"></i>&nbsp;Partager</button>
+                        </div>
+                    </form>
+
+                </div>
+
+                <hr >
+
+                {% else %}
+                <div class="newuser">
+                     <div> <i class="glyphicon glyphicon-plus"></i></div>
+
+                    <div  class="avatar">
+                    <img src="{{ asset(donnee.avatar) }}" alt="utilisateur" />
+                    </div>
+                    <div>
+                 &nbsp;<a href="{{ path('profil_user',{'username':donnee.username}) }}">{{  donnee.username }} </a> à rejoint la communauté de <a href="#">GoldLink </a> Le
+                    {{ donnee.dateInscription | localizeddate('full', 'none') }} à
+                    {{ donnee.dateInscription | localizeddate('none', 'short') }}
+                    </div>
+
+                 </div>
+                    <hr />
+                {% endif %}
+
+                {% endfor %}
+                <div id="loaderbas" style="display: none">
+                    <img src="{{ asset('img/loading.gif') }}" title="chargement" >
+                </div>
+            </div>
+            </div>
+
+
+
+    <script>
+        function borderNone(id){
+            var input = document.getElementById("search");
+            input.style.border = 'none';
+        }
+    </script>
+        {% endblock %}
+
+
+{% endblock %}
+    {% block footer %}
+        {{ parent() }}
+    {% endblock %}
+{% endblock %}
+
+{% block javascripts %} {{ parent() }}
+    <script type="text/javascript">
+
+        var lastUserId; //dernier utilisateur inscris
+        var lastLinkid; //dernier lien publié
+
+        var lastUserAfficherId; //dernier utilisateur afficher
+        var lastLinkAfficherId; //dernier lien afficher;
+
+        $(function(){
+            $('a').each(function(){
+                $a = $(this);
+                var attr = $a.attr('data-autreLien');
+                if(typeof attr !== 'undefined'&& attr !== false){
+                    $a.click(function(){
+                        return false;
+                    });
+                }
+
+                attr = $a.attr('data-clique');
+
+                if(typeof attr !== 'undefined'&& attr !== false){
+                    $a.click(function(){
+                        $.get(attr, function(response){
+                            alert(response);
+                        });
+                        return false;
+                    });
+                }
+
+            });
+
+
+        });
+        $(document).ready(function(){setInterval(UpdateFilActualite,5000)});
+        function updateFirstID(lastUser,lastLink){
+            lastUserId = lastUser;
+            lastLinkid = lastLink;
+        }
+        function updateLastID(lastUser,lastLink){
+            lastLinkAfficherId = lastLink;
+            lastUserAfficherId = lastUser;
+        }
+
+        function UpdateFilActualite(){
+            parametre = '';
+            $.ajax({
+                type: "POST",
+                url : "{{ url('_update_fil_actualite') }}",
+                data: parametre,
+                cache: false,
+                success: function(donnee){
+                    if(donnee!=''){
+                        $(donnee).prependTo('#file-actualite').hide().animate({'height':'toggle','opacity':'toggle'},2000);
+                    }
+                }
+
+            });
+            return false;
+        }
+
+        $(window).scroll(function(){
+            if($(window).scrollTop() == $(document).height() - $(window).height()){
+                parametre = 'idLastUser= '+lastUserAfficherId+'&idLastLink='+lastLinkAfficherId;
+                $("#loaderbas").show();
+                $.ajax({
+                    type: "POST",
+                    url : "{{ path('_update_fil_when_scroll') }}",
+                    data : parametre,
+                    cache: false,
+                    success : function(donnee){
+                        if(donnee!=''){
+                            $("#loaderbas").remove();
+                           $("#file-actualite").append(donnee);
+                        } else {
+                            $("#loaderbas").hide();
+                        }
+                    }
+                });
+            }
+        })
+
+        function afficherFormAjout(id){
+            $("#"+id).animate({'height':'toggle','opacity':'toggle'},700);
+            $(".alert").remove();
+            event.preventDefault();
+
+            return false;
+        }
+
+        function fermerForm(id){
+
+            $("#"+id).hide('slow');
+        }
+
+        function ajoutNouveauLien(id){
+            $(".alert").remove();
+            $('.loader'+id).show();
+            titre = $("#"+id+"titre").val();
+            thematique = $("#"+id+"thematique").val();
+            visibilite = $("#"+id+"visibilite").val();
+            url = $("#"+id+"url").val();
+
+
+            if(!Url_Valide(url,true)){
+                html = "<pre class='alert alert-warning bounceInDown'>L'url du lien est invalide !.</pre>";
+                $('.loader'+id).hide();
+                $("#"+id).before(html);
+            } else if(titre.length <= 2 || ! isNaN(titre)){
+                html = "<pre class='alert alert-danger animated bounceInDown'><b>Le titre associé au lien est incorrect.<b></pre>";
+                $('.loader'+id).hide();
+                $("#"+id).before(html);
+            } else if(isNaN(thematique)){
+                html = "<pre class='alert alert-warning animated bounceInDown'><b>La thématique choisie est invalide.<b></pre>";
+                $('.loader'+id).hide();
+                $("#"+id).before(html);
+            } else if(isNaN(visibilite)){
+                html = "<pre class='alert alert-warning animated bounceInDown'><b>La visibilité choisie est invalide.<b></pre>";
+                $('.loader'+id).hide();
+                $("#"+id).before(html);
+            } else {
+                parametre = 'url='+url+'&idThematique='+thematique+'&idVisibilite='+visibilite+'&titre='+titre;
+                $.ajax({
+                    type: "POST",
+                    url : "{{ url('Ajouter_Autre_Lien') }}",
+                    data : parametre,
+                    success: function(donnee){
+                        $('.loader'+id).animate({'height':'toggle','opacity':'toggle'},700);
+                        $("#"+id).before(donnee).animate({'height':'toggle','opacity':'toggle'},700);
+                    },
+                    error:function(donnee,code){
+
+                    }
+                });
+                return false
+            }
+
+            return false;
+        }
+
+        function Url_Valide(UrlTest, http_fac) {
+            if (http_fac){
+                var regexp = new RegExp("^((http|https):\/\/)?(www[.])?([a-zA-Z0-9]|-)+([.][a-zA-Z0-9(-|\/|=|?)?]+)+$");
+            }else{
+                var regexp = new RegExp("^((http|https):\/\/){1}(www[.])?([a-zA-Z0-9]|-)+([.][a-zA-Z0-9(-|\/|=|?)?]+)+$");
+            }
+
+                return regexp.test(UrlTest);
+        }
+
+        function notation(id){
+            var elem = id.split(',');
+            id = elem[0];
+            parent = elem[1];
+            $courant = $("#"+id);
+            for(i=1;i<=50;i++){
+                var e = parent + "" + i;
+
+                if(e<=id){
+                    $("#"+e).addClass('active');
+                } else {
+                    $("#"+e).addClass('desactive-etoile');
+                }
+            }
+        }
+
+        function mouseOut(id){
+            var elem = id.split(',');
+            id = elem[0];
+            parent = elem[1];
+            for(i=50;i>=1;i--){
+
+                var e = parent + "" + i;
+                if(e>=id){
+
+                    $("#"+e).removeClass('active');
+                } else {
+                    $("#"+e).addClass('active');
+                }
+            }
+            if(click){
+                $("#"+id).addClass('active');
+            }
+        }
+        var click = false;
+        function ulMouseOut(id){
+            for(i=1;i<=50 && ! click ;i++){
+
+                var e = id + "" + i;
+
+                $("#"+e).removeClass('active');
+            }
+        }
+
+        function simuleMouseOver(id){
+            click = true;
+            $("#"+id).trigger("mouseover");
+            return false;
+        }
+
+        function noterLien(id){
+            $('.loader'+id).show();
+            var note;
+            for(i=1;i<=50;i++){
+                 var e = id + "" + i;
+                if($("#"+e).hasClass('active')){
+                    note = i;
+                }
+            }
+            parametre = 'idLien='+id+'&note='+note;
+            $.ajax({
+                type : "POST",
+                url : "{{ path('Noter_Lien') }}",
+                data : parametre,
+                success : function(donnee){
+                    $('.loader'+id).animate({'height':'toggle','opacity':'toggle'},700);
+                    $('#notation'+id).before(donnee).animate({'height':'toggle','opacity':'toggle'},700);
+                }
+            });
+            return false;
+        }
+
+    function ajouterClique(id){
+        parametre = 'idLien='+id;
+        $.ajax({
+            type : "POST",
+            url : "{{ path('Ajouter_Clique') }}",
+            data : parametre,
+            success: function(donnee){
+
+            }
+        });
+        return false;
+    }
+
+    function partagerLien(idLien){
+        idGroupe = $("#"+idLien+"select");
+
+        event.preventDefault();
+
+    }
+    </script>
+
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/fr_FR/all.js#xfbml=1&appId=472084239558987";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+{% endblock %}

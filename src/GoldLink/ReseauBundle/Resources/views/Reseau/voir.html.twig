@@ -1,0 +1,86 @@
+
+{% extends "GoldLinkUserBundle::layout.html.twig" %}
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/boostrap.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/jquery-ui.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/ajout.css') }}">
+{% endblock %}
+
+
+        {% block body %}
+        {% block header %} {{ parent() }} {% endblock %}
+        {% block page %}
+            {% block navbar %} {{ parent() }}{% endblock %}
+            {% block contenu %}
+
+                <div id="contenu" class="fond">
+                <div id="legend_titre2">
+                    <legend> Mon Réseau &bkarow; {{groupe.nomDuGroupe }}</legend>
+                </div>
+                    <b><a style="color: dodgerblue">{{ users | length }} Membre(s)</a></b>
+                    &nbsp;<b><a>Administré par {{ groupe.administrateur.username }}</a></b>
+                    <legend>Les  Liens  du Groupe</legend>
+
+                <div class="panel panel-primary taille">
+                    <div class="panel-heading">Les liens du Réseau</div>
+                    <div class="panel-body">
+                        <form class="form-control-static" role="form" method="post">
+                            <table class="table">
+                                <tr>
+                                    <th>Titre</th>
+                                    <th>Url du Lien</th>
+                                    <th>Date de publication</th>
+                                    <th>Nombre de clique</th>
+                                    <th>Partager par </th>
+                                </tr>
+
+
+    {% if lesliens|length > 0 %}
+        {% for a in lesliens %}
+
+            <tr>
+                <td><a href="{{ a.lien.url }}" target="_blank" onclick="ajouterClique('{{ a.lien.id }}')">{{ a.lien.titre }}</a> </td>
+                <td><a href="{{ a.lien.url }}" target="_blank" onclick="ajouterClique('{{ a.lien.id }}')">{{ a.lien.url }}</a></td>
+                <td>{{ a.date|date('d/m/Y') }}</td>
+                <td>{{ a.lien.cliques | length }}</td>
+                <td><a href="{{ path('profil_user',{'username':a.utilisateur.username}) }}">{{ a.utilisateur.username }}</a></td>
+             </tr>
+
+        {% endfor %}
+
+    {% else %}
+
+           <tr> <pre class="alert alert-info">Aucun Lien n'a été trouvé.</pre> </tr>
+
+    {% endif %}
+                            </table>
+                        </form></div></div>
+        </div>
+
+
+
+
+            {% endblock %}
+        {% endblock %}
+
+    {% block footer %} {{ parent() }} {% endblock %}
+
+{% endblock body %}
+
+{% block javascript %}
+                    <script>
+                    function ajouterClique(id){
+                    parametre = 'idLien='+id;
+                    $.ajax({
+                    type : "POST",
+                    url : "{{ path('Ajouter_Clique') }}",
+                    data : parametre,
+                    success: function(donnee){
+
+                    }
+                    });
+                    return false;
+                    }
+                    </script>
+{% endblock %}

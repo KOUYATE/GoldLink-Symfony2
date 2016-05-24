@@ -1,0 +1,18 @@
+parameters:
+#    gold_link_user.example.class: GoldLink\UserBundle\Example
+
+services:
+#    gold_link_user.example:
+#        class: %gold_link_user.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
+    goldlink.admin.user:
+        class: GoldLink\UserBundle\Admin\UserAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: Utilisateur | Groupe, label: Utilisateur }
+        arguments: [null, GoldLink\UserBundle\Entity\User, null ]
+    goldlink.admin.groupe:
+        class: GoldLink\UserBundle\Admin\GroupeAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: Utilisateur | Groupe, label: Groupe }
+        arguments: [null, GoldLink\UserBundle\Entity\Groupe, null ]
+

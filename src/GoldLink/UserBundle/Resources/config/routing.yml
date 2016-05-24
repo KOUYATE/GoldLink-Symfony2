@@ -1,0 +1,34 @@
+gold_link_user_homepage:
+    pattern:  /hello/{name}
+    defaults: { _controller: GoldLinkUserBundle:Default:index }
+
+acces_membres:
+    pattern: /
+    defaults: { _controller: GoldLinkUserBundle:Membre:index }
+
+gold_link_user_parametre:
+    pattern: /parametre-compte
+    defaults: { _controller: GoldLinkUserBundle:Membre:parametre }
+
+gold_link_user_changer_avatar:
+    pattern: /changer-photo-de-profil
+    defaults: { _controller: GoldLinkUserBundle:Membre:changerAvatar }
+
+gold_link_user_supprimer_avatar:
+    pattern: /supprimer-photo-de-profil
+    defaults: { _controller: GoldLinkUserBundle:Membre:supprimerAvatar }
+
+
+_update_fil_actualite:
+    pattern: /updateFilActualite
+    defaults: { _controller: GoldLinkUserBundle:Membre:updateFilActualite }
+    requirements:
+
+_update_fil_when_scroll:
+    pattern: /updateFilWhenScroll
+    defaults: { _controller: GoldLinkUserBundle:Membre:updateFilWhenScroll }
+    requirements:
+        _method: POST
+profil_user:
+    pattern: /{username}
+    defaults: {_controller: GoldLinkUserBundle:Membre:profilUser}

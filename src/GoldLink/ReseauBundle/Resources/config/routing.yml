@@ -1,0 +1,32 @@
+groupe:
+    pattern: /groupe
+    defaults: { _controller: GoldLinkReseauBundle:Reseau:groupe }
+
+groupe_ajout:
+    pattern: /groupe/ajout
+    defaults: { _controller: GoldLinkReseauBundle:Reseau:ajout }
+groupe_suivre:
+    pattern: /groupe/suivre/{id}
+    defaults: { _controller: GoldLinkReseauBundle:Reseau:suivre }
+groupe_voir:
+    pattern: /groupe/voir/{id}
+    defaults: { _controller: GoldLinkReseauBundle:Reseau:voir }
+groupe_rechercher:
+    pattern: /groupe/rechercher
+    defaults: { _controller: GoldLinkReseauBundle:Reseau:rechercher }
+groupe_modifier:
+    pattern: /groupe/modifier/{id}
+    defaults: { _controller: GoldLinkReseauBundle:Reseau:modifier }
+groupe_supprimer:
+    pattern: /groupe/supprimer/{id}
+    defaults: { _controller: GoldLinkReseauBundle:Reseau:supprimer }
+Ajax_Rechercher_Groupe:
+    pattern: /groupe/rechercher-{groupe}
+    defaults: { _controller: GoldLinkReseauBundle:Ajax:rechercher }
+groupe_demande:
+    pattern: /groupe/demande-{type}-{groupe}-{emetteur}
+    defaults: { _controller: GoldLinkReseauBundle:Reseau:demande }
+    requirements:
+        type: oui|non
+        groupe: \d+
+        emetteur: \d+

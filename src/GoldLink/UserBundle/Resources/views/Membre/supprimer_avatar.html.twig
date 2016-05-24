@@ -1,0 +1,46 @@
+{% extends "GoldLinkUserBundle::layout.html.twig" %}
+
+{% block title %}GoldLink{% endblock %}
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/boostrap.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
+
+{% endblock %}
+
+{% block body %}
+
+    {% block header %}
+        {{ parent() }}
+    {% endblock %}
+
+    {% block page %}
+
+        {% block navbar %} {{ parent() }} {% endblock %}
+        {% block contenu %}
+            <div id="contenu" class="fond">
+                <div id="legend_titre2"><legend>Suppression Photo de profil</legend></div>
+                <div class="alert alert-info">
+                    Voulez-vous vraiment supprimer votre photo de profil ?
+                </div>
+                <form action="{{ path('gold_link_user_supprimer_avatar') }}" method="post">
+                <button type="submit" name="oui" class="btn btn-danger"><i class="glyphicon glyphicon-trash"></i>
+                    Oui
+                </button>
+                <button type="submit" name="non" class="btn btn-info">
+                    Non
+                </button>
+                    </form>
+
+            </div>
+
+        {% endblock %}
+
+    {% endblock %}
+
+    {% block footer %} {{ parent() }} {% endblock %}
+
+{% endblock %}
+
+{% block javascripts %} {{ parent() }} {% endblock %}

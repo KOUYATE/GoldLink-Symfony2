@@ -1,0 +1,63 @@
+{% extends "GoldLinkUserBundle::layout.html.twig" %}
+
+{% block title %}GoldLink{% endblock %}
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/boostrap.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
+
+{% endblock %}
+
+{% block body %}
+
+    {% block header %}
+        {{ parent() }}
+    {% endblock %}
+
+    {% block page %}
+
+        {% block navbar %} {{ parent() }} {% endblock %}
+        {% block contenu %}
+            <div id="contenu" class="fond">
+                <div id="legend_titre2"><legend>Changer Photo de profil</legend></div>
+                {% if erreurs is defined %}
+                    <div class="alert alert-warning">
+                        {{ erreurs }}
+                    </div>
+                {% endif %}
+                {% if success is defined %}
+                    <div class="alert alert-success">
+                        {{ success }}
+                    </div>
+                {% endif %}
+                <label for="avatar">Choisir une image  </label>
+                <form method="post" {{ form_enctype(form) }} action="{{ path('gold_link_user_changer_avatar') }}">
+
+
+                    <table class="table table-hover">
+                        <tr>
+                            <td style="width: 35%">
+                            {{ form_widget(form.fichier) }}
+                            </td>
+                        </tr>
+                        <tr>
+                             <td><button type="submit" name="envoyerAvatar" class="btn btn-success"><i class="glyphicon glyphicon-pencil"></i>
+                            Changer photo de profil</button>
+                             <button type="reset" class="btn btn-danger">Réinitialiser</button> </td>
+                        </tr>
+                    </table>
+
+                    </form>
+
+            </div>
+
+        {% endblock %}
+
+    {% endblock %}
+
+    {% block footer %} {{ parent() }} {% endblock %}
+
+{% endblock %}
+
+{% block javascripts %} {{ parent() }} {% endblock %}

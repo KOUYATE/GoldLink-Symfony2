@@ -1,0 +1,497 @@
+{% extends "GoldLinkUserBundle::layout.html.twig" %}
+
+{% block title %}GoldLink{% endblock %}
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/boostrap.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/jquery-ui.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/lien.css') }}">
+{% endblock %}
+
+{% block body %}
+
+    {% block header %}
+        {{ parent() }}
+    {% endblock %}
+
+    {% block page %}
+
+        {% block navbar %} {{ parent() }} {% endblock %}
+        {% block contenu %}
+            <div id="contenu" class="fond">
+                <div id="legend_titre2">
+                    <legend>Profil & Bibliothèque</legend>
+                </div>
+                <di>
+                    <a href="{{ path('profil_user',{'username':user.username}) }}"><B>{{ user.username }}</B></a>
+                </di>
+                <div class="form">
+                    <li> <a href="#"> {{ nbLien }} Liens </a></li>
+                    <li> <a href="#"> {{ nbLienPublic }} Liens Publics</a></li>
+                    <li> <a href="#"> {{ nombreGroupes }} Reseau(x) Suivi(s)</a></li>
+                    <li> <a href="#"> {{ nbAdministree }} Réseau(x) Administré(s) </a></li>
+                </div>
+                <div class="avatar">
+                    <a href="{{ path('profil_user',{'username':user.username}) }}">
+                        <img src="{{ asset(user.avatar) }}" title="{{ user.username }}">
+                    </a>
+                </div>
+
+                {% if app.user.username == user.username %}
+                <legend>Thématique</legend>
+                {% for theme in thematiques %}
+                    <a href="" onclick="afficherThematique('{{ theme.libelleThematique }}')" class="btn btn-primary btn-sm">{{ theme.libelleThematique }}</a> |
+                {% endfor %}
+                <hr>
+                {% for theme in thematiques %}
+                    {% if loop.index == 1 %}
+                    <div class="panel panel-primary animated bounceInDown" id="{{ theme.libelleThematique }}">
+                    {% else %}
+                        <div class="panel panel-primary animated bounceInDown" id="{{ theme.libelleThematique }}" style="display: none">
+                    {% endif %}
+                        <div class="panel-heading"><b>Thématique &bkarow;
+                            {{ theme.libelleThematique }}</b>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table table-hover">
+                                <tr>
+                                    <th>Titre</th>
+                                    <th>Url</th>
+                                    <th>Visibilité</th>
+
+                                    <th>Nombre de clique</th>
+                                    <th>Nombre de partage</th>
+                                    <th>Publication</th>
+                                    <th>Notation</th>
+                                    <th> Note Moyenne</th>
+
+                                </tr>
+                                {% for lien in listeLiens %}
+                                    {% if lien.thematiqueLien.libelleThematique == theme.libelleThematique %}
+                                        <tr>
+                                            <td>
+                                                <a href="{{ path('Modifier_Lien',{'id':lien.id}) }}">{{ lien.titre }}</a>
+                                            </td>
+                                            <td>
+                                                <a href="{{ lien.url }}" onclick="ajouterClique('{{ lien.id }}')" target="_blank"> {{ lien.url }}</a>
+                                            </td>
+                                            <td>
+                                                {{ lien.visibiliteLien.libelle }}
+                                            </td>
+
+                                            <td>
+                                                <b style="font-weight:bold;color: green">
+                                                    {{ lien.cliques | length }}
+                                                </b>
+                                            </td>
+                                            <td>
+                                                <b style="font-weight:bold;color: green">
+                                                {{ lien.publication | length }}
+                                                    </b>
+                                            </td>
+                                            <td>
+                                                <a href="{{ path('Partager_Lien',{'id':lien.id}) }}">Publiez</a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="return afficherFormAjout('{{ 'notation'~ lien.id }}')" >Notez</a>
+                                            </td>
+
+
+                                           <td>
+                                               <b style="font-weight:bold;color: green">
+                                          {% set compter=0  %}
+                                          {% for note in lien.notations %}
+                                             {%set compter = compter + note.nombreEtoile  %}
+                                              {% endfor %}
+                                          {% if lien.notations | length == 0 %}
+                                             {{ compter }}
+                                          {% else %}
+                                              {{ compter / lien.notations |length }}
+                                          {% endif %}
+                                            </b>
+                                           </td>
+
+                                        </tr>
+
+                                                <div class="animated rotateIn etoile" id="{{ 'notation'~ lien.id  }}" style="display: none">
+                                                    <div id="file-actualite">
+                                                        <ul class="{{ lien.id ~ 'ul' }}" onmouseout="ulMouseOut('{{ lien.id}}')">
+                                                            {% for i  in 1..parametre.NoteMaximale %}
+                                                                <li>
+                                                                    <label></label>
+                                                                    <a href="" title="{{ 'Note : '~i~' sur '~parametre.NoteMaximale }}">
+                                                                        <i class="glyphicon glyphicon-star"
+                                                                           id="{{ lien.id ~ i }}"
+                                                                           onmouseover="notation('{{ lien.id ~ i }},{{ lien.id  }}')"
+                                                                           onmouseout="mouseOut('{{ lien.id ~ i }},{{ lien.id  }}')"
+                                                                           onclick="return simuleMouseOver('{{ lien.id ~ i }}')"></i>
+                                                                    </a>
+                                                                </li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </div>
+                                                    <a href="" onclick="return noterLien('{{ lien.id }}')" class="btn btn-warning"><i class="glyphicon glyphicon-ok-circle"></i>&nbsp;
+                                                        Noter</a>
+                                                </div>
+
+                                    {% endif %}
+
+                                {% endfor %}
+                            </table>
+                        </div>
+                        <div class="panel-footer alert-info">
+                            <b>Pour modifier un lien (ajout de nouveaux tags, suppression) veuillez cliquer sur le titre du lien.</b>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% else %}
+                <hr>
+                <div>
+                    <div class="panel panel-primary animated bounceInDown">
+                     <div class="panel-heading"><b>
+                         Liens publics de {{ user.username }}</b>
+                     </div>
+                     <div class="panel-body">
+                         <table class="table table-hover">
+                             <tr>
+                                 <th>Titre</th>
+                                 <th>Url</th>
+                                 <th>Nombre de clique</th>
+                                 <th>Nombre de partage</th>
+                                 <th>Publication</th>
+                             </tr>
+
+                   {% for lien in listeLiens %}
+
+                        {% if lien.visibiliteLien.libelle == "Public" %}
+
+                        <tr>
+                            <td>
+                                {{ lien.titre }}
+                            </td>
+                            <td>
+                                <a href="{{ lien.url }}" onclick="ajouterClique('{{ lien.id }}')" target="_blank">{{ lien.url }}</a>
+                            </td>
+                            <td>
+                                <b style="font-weight:bold;color: green">
+                                    {{ lien.cliques | length }}
+                                </b>
+                            </td>
+                            <td>
+                                <b style="font-weight:bold;color: green">
+                                    {{ lien.publication | length }}
+                                </b>
+                            </td>
+
+                            <td>
+                                <a href="{{ path('Partager_Lien',{'id':lien.id}) }}">Publiez</a>
+                            </td>
+
+
+
+
+                        </tr>
+
+
+
+                        {% endif %}
+                   {% endfor %}
+                             </table>
+                     </div>
+                    </div>
+                   {% endif %}
+                </div>
+
+            </div>
+        {% endblock %}
+
+    {% endblock %}
+
+    {% block footer %} {{ parent() }} {% endblock %}
+
+{% endblock %}
+
+{% block javascripts %} {{ parent() }}
+    <script type="text/javascript" src="{{ asset('js/jquery-ui.js') }}"></script>
+    <script>$(function() {
+            $( "#tabs" ).tabs();
+        });
+    function afficherThematique(id){
+        $courant = $("#"+id);
+
+        $('.panel').each(function(){
+
+           if($(this).attr('id')==$courant.attr('id')){
+               $(this).addClass('bounceInDown');
+             $(this).show('slow');
+           } else {
+
+              $(this).addClass('bounceOutDown');
+              $(this).hide('slow');
+           }
+        })
+        event.preventDefault();
+    }
+
+
+
+    var lastUserId; //dernier utilisateur inscris
+    var lastLinkid; //dernier lien publié
+
+    var lastUserAfficherId; //dernier utilisateur afficher
+    var lastLinkAfficherId; //dernier lien afficher;
+
+    $(function(){
+        $('a').each(function(){
+            $a = $(this);
+            var attr = $a.attr('data-autreLien');
+            if(typeof attr !== 'undefined'&& attr !== false){
+                $a.click(function(){
+                    return false;
+                });
+            }
+
+            attr = $a.attr('data-clique');
+
+            if(typeof attr !== 'undefined'&& attr !== false){
+                $a.click(function(){
+                    $.get(attr, function(response){
+                        alert(response);
+                    });
+                    return false;
+                });
+            }
+
+        });
+
+
+    });
+    $(document).ready(function(){setInterval(UpdateFilActualite,5000)});
+    function updateFirstID(lastUser,lastLink){
+        lastUserId = lastUser;
+        lastLinkid = lastLink;
+    }
+    function updateLastID(lastUser,lastLink){
+        lastLinkAfficherId = lastLink;
+        lastUserAfficherId = lastUser;
+    }
+
+    function UpdateFilActualite(){
+        parametre = '';
+        $.ajax({
+            type: "POST",
+            url : "{{ url('_update_fil_actualite') }}",
+            data: parametre,
+            cache: false,
+            success: function(donnee){
+                if(donnee!=''){
+                    $(donnee).prependTo('#file-actualite').hide().animate({'height':'toggle','opacity':'toggle'},2000);
+                }
+            }
+
+        });
+        return false;
+    }
+
+    $(window).scroll(function(){
+        if($(window).scrollTop() == $(document).height() - $(window).height()){
+            parametre = 'idLastUser= '+lastUserAfficherId+'&idLastLink='+lastLinkAfficherId;
+            $("#loaderbas").show();
+            $.ajax({
+                type: "POST",
+                url : "{{ path('_update_fil_when_scroll') }}",
+                data : parametre,
+                cache: false,
+                success : function(donnee){
+                    if(donnee!=''){
+                        $("#loaderbas").remove();
+                        $("#file-actualite").append(donnee);
+                    } else {
+                        $("#loaderbas").hide();
+                    }
+                }
+            });
+        }
+    })
+
+    function afficherFormAjout(id){
+        $('.etoile').each(function(){
+           $(this).hide();
+        });
+        $("#"+id).animate({'height':'toggle','opacity':'toggle'},700);
+        $(".alert").remove();
+        event.preventDefault();
+
+        return false;
+    }
+
+    function fermerForm(id){
+
+        $("#"+id).hide('slow');
+    }
+
+    function ajoutNouveauLien(id){
+        $(".alert").remove();
+        $('.loader'+id).show();
+        titre = $("#"+id+"titre").val();
+        thematique = $("#"+id+"thematique").val();
+        visibilite = $("#"+id+"visibilite").val();
+        url = $("#"+id+"url").val();
+
+
+        if(!Url_Valide(url,true)){
+            html = "<pre class='alert alert-warning bounceInDown'>L'url du lien est invalide !.</pre>";
+            $('.loader'+id).hide();
+            $("#"+id).before(html);
+        } else if(titre.length <= 2 || ! isNaN(titre)){
+            html = "<pre class='alert alert-danger animated bounceInDown'><b>Le titre associé au lien est incorrect.<b></pre>";
+            $('.loader'+id).hide();
+            $("#"+id).before(html);
+        } else if(isNaN(thematique)){
+            html = "<pre class='alert alert-warning animated bounceInDown'><b>La thématique choisie est invalide.<b></pre>";
+            $('.loader'+id).hide();
+            $("#"+id).before(html);
+        } else if(isNaN(visibilite)){
+            html = "<pre class='alert alert-warning animated bounceInDown'><b>La visibilité choisie est invalide.<b></pre>";
+            $('.loader'+id).hide();
+            $("#"+id).before(html);
+        } else {
+            parametre = 'url='+url+'&idThematique='+thematique+'&idVisibilite='+visibilite+'&titre='+titre;
+            $.ajax({
+                type: "POST",
+                url : "{{ url('Ajouter_Autre_Lien') }}",
+                data : parametre,
+                success: function(donnee){
+                    $('.loader'+id).animate({'height':'toggle','opacity':'toggle'},700);
+                    $("#"+id).before(donnee).animate({'height':'toggle','opacity':'toggle'},700);
+                },
+                error:function(donnee,code){
+
+                }
+            });
+            return false
+        }
+
+        return false;
+    }
+
+    function Url_Valide(UrlTest, http_fac) {
+        if (http_fac){
+            var regexp = new RegExp("^((http|https):\/\/)?(www[.])?([a-zA-Z0-9]|-)+([.][a-zA-Z0-9(-|\/|=|?)?]+)+$");
+        }else{
+            var regexp = new RegExp("^((http|https):\/\/){1}(www[.])?([a-zA-Z0-9]|-)+([.][a-zA-Z0-9(-|\/|=|?)?]+)+$");
+        }
+
+        return regexp.test(UrlTest);
+    }
+
+    function notation(id){
+        var elem = id.split(',');
+        id = elem[0];
+        parent = elem[1];
+        $courant = $("#"+id);
+        for(i=1;i<=50;i++){
+            var e = parent + "" + i;
+
+            if(e<=id){
+                $("#"+e).addClass('active');
+            } else {
+                $("#"+e).addClass('desactive-etoile');
+            }
+        }
+    }
+
+    function mouseOut(id){
+        var elem = id.split(',');
+        id = elem[0];
+        parent = elem[1];
+        for(i=50;i>=1;i--){
+
+            var e = parent + "" + i;
+            if(e>=id){
+
+                $("#"+e).removeClass('active');
+            } else {
+                $("#"+e).addClass('active');
+            }
+        }
+        if(click){
+            $("#"+id).addClass('active');
+        }
+    }
+    var click = false;
+    function ulMouseOut(id){
+        for(i=1;i<=50 && ! click ;i++){
+
+            var e = id + "" + i;
+
+            $("#"+e).removeClass('active');
+        }
+    }
+
+    function simuleMouseOver(id){
+        click = true;
+        $("#"+id).trigger("mouseover");
+        return false;
+    }
+
+    function noterLien(id){
+        $('.loader'+id).show();
+        var note;
+        for(i=1;i<=50;i++){
+            var e = id + "" + i;
+            if($("#"+e).hasClass('active')){
+                note = i;
+            }
+        }
+        parametre = 'idLien='+id+'&note='+note;
+        $.ajax({
+            type : "POST",
+            url : "{{ path('Noter_Lien') }}",
+            data : parametre,
+            success : function(donnee){
+                $('.loader'+id).animate({'height':'toggle','opacity':'toggle'},700);
+                $('#notation'+id).before(donnee).animate({'height':'toggle','opacity':'toggle'},700);
+            }
+        });
+        return false;
+    }
+
+    function ajouterClique(id){
+        parametre = 'idLien='+id;
+        $.ajax({
+            type : "POST",
+            url : "{{ path('Ajouter_Clique') }}",
+            data : parametre,
+            success: function(donnee){
+
+            }
+        });
+        return false;
+    }
+
+    function partagerLien(idLien){
+        idGroupe = $("#"+idLien+"select");
+
+        event.preventDefault();
+
+    }
+    </script>
+
+                <div id="fb-root"></div>
+                <script>(function(d, s, id) {
+                        var js, fjs = d.getElementsByTagName(s)[0];
+                        if (d.getElementById(id)) return;
+                        js = d.createElement(s); js.id = id;
+                        js.src = "//connect.facebook.net/fr_FR/all.js#xfbml=1&appId=472084239558987";
+                        fjs.parentNode.insertBefore(js, fjs);
+                    }(document, 'script', 'facebook-jssdk'));</script>
+
+                <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+
+
+
+{% endblock %}

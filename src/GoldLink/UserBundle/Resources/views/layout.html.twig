@@ -1,0 +1,103 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <div class="conteneur">
+    {% block header %}
+    <div id="header-transparent">
+        <a href="{{ path('acces_membres') }}" class="nom_site">
+            <img src="{{ asset('img/icon3.png') }}" style="margin-left:3em;margin-right:1em" />GoldLink</a>
+
+        <div class="btn-group" id="log">
+            <div id="avatar">
+
+                {% if app.user.avatar is defined %}
+                    <a href="{{ path('acces_membres') }}">
+                        <img src="{{ asset(app.user.avatar) }}" />
+                    </a>
+                {% else %}
+                    <a href="{{ path('acces_membres') }}">
+                        <img src="{{ asset('') }}" />
+                    </a>
+                {% endif %}
+            </div>
+
+            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+                Mon compte <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="{{ path('gold_link_user_changer_avatar') }}">Changer photo</a></li>
+                <li><a href="{{ path('gold_link_user_supprimer_avatar') }}" onclick="confirm('Voulez vous vraiment supprimer votre photo de profil ?')">Supprimer photo du profil</a></li>
+                <li class="divider"></li>
+                <li><a href="{{ path('gold_link_user_parametre') }}">Paramètre compte</a></li>
+                <li class="divider"></li>
+                <li><a href="{{ path('fos_user_security_logout') }}">Déconnexion</a></li>
+            </ul>
+        </div>
+    </div>
+    {% endblock %}
+
+    {% block page %}
+        {% block navbar %}
+            <div id="nav_bar">
+                <div id="profil">
+                    Bienvenue {{ app.user.username }}
+
+                </div>
+                <ul>
+                    <input type="search" id="search"  onFocus="borderNone(search)" class="form-control"/>
+                    <li class="select"><a href="{{ path('acces_membres') }}">Actualités</a></li>
+                    <li><a href="{{ path('Ajouter_Lien') }}" id="ajouter">Ajouter un Lien</a></li>
+                    <li><a href="{{ path('profil_user',{'username':app.user.username}) }}">Ma Bibliothèque</a></li>
+                    <li><a href="{{ path('Gestion_Lien') }}">Recherche & Gestion des liens</a></li>
+                    <li><a href="{{ path('groupe') }}">Mes Réseaux</a></li>
+                    <li><a href="{{ path('gold_link_user_parametre') }}">Paramètres du Compte</a></li>
+
+                </ul>
+               <div id="date_derniere_connexion">
+                    Dernier accès : {{ app.user.lastLogin | localizeddate('full', 'none') }} à
+                   {{ app.user.lastLogin | localizeddate('none', 'short') }}
+                </div>
+            </div>
+        {%  endblock %}
+
+        {% block contenu %}
+
+
+        {% endblock %}
+
+
+    {% endblock %}
+
+    {% block footer %}
+        <footer>
+            <div id="bar"></div>
+            <p> GoldLink c'est Partager, Publier, Stocker vos liens favoris avec vos groupes et toute la communauté.<br>
+
+            </p>
+            <p>
+                <a href="#" class="orange"> Copyrigth </a>
+                <span class="separator">|</span>
+                <a href="#" > Développeur </a>
+                <span class="separator">|</span>
+                <a href="#"> Condition d'Utilisation </a>
+            </p>
+        </footer>
+    {% endblock %}
+    </div>
+{% endblock %}
+
+        {% block javascripts %}
+            <script type="text/javascript" src="{{ asset('js/jquery.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('js/goldlink.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('js/bootstrap.js') }}"></script>
+            <script type="text/javascript">
+                var d = new Date();
+                d = d.getFullYear();
+                dateOption($('#annee') , d - 100 , d);
+
+                function borderNone(id){
+                    var input = document.getElementById("search");
+                    input.style.border = 'none';
+                }
+            </script>
+        {% endblock %}
