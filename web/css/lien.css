@@ -1,0 +1,22 @@
+.dropdown-menu li a{
+	display: inline-block;
+	
+}
+.form li {
+	display: inline-block;
+	margin-right: 20px;
+	margin-top: 20px;
+	margin-bottom: 15px;
+}
+.allo{
+	display: inline-block;
+}
+.allomodif{
+	display: inline-block;
+	
+}
+.form a{
+text-decoration:none;
+color:#0080FF;
+font-weight:bold;	
+}
